@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+	/* -webkit-font-smoothing: antialiased; */
+	@apply bg-skin-base text-skin-primary;
+}
+
+button,
+input,
+select,
+textarea {
+	@apply outline-none bg-transparent;
+}
+
+select {
+	appearance: none;
+}
+
+button[disabled] {
+	@apply cursor-default;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+	-moz-appearance: textfield;
+}

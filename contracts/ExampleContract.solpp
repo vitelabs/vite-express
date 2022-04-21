@@ -1,0 +1,28 @@
+// SPDX-License-Identifier: GPL-3.0
+// buy coffee for someone
+
+pragma soliditypp >=0.8.0;
+
+contract ExampleContract {
+   constructor() payable {}
+
+   // Receive Token function
+   receive() external payable {
+   }
+
+   uint256 public price = 10**18;
+
+   vitetoken public constant VITE = "tti_5649544520544f4b454e6e40";
+
+   event Buy(address from, address to, uint256 num);
+
+   function buyCoffee(address payable to, uint256 numOfCups) payable external {
+      require(msg.token == VITE, "require vite");
+      require(msg.value >= price*numOfCups, "enough to buy coffee");
+
+      // send VITE to `to`
+      to.transfer(VITE, price * numOfCups);
+
+      emit Buy(msg.sender, to, numOfCups);
+   }
+}

@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	.xy {
+		@apply flex justify-center items-center;
+	}
+
+	.fx {
+		@apply flex items-center;
+	}
+
+	.fy {
+		@apply flex flex-col items-center;
+	}
+
+	.b {
+		border: 1px solid red;
+	}
+
+	.o {
+		outline: 1px solid red;
+	}
+
+	.brightness-button {
+		@apply transition-[filter] duration-150 hover:brightness-95 dark:hover:brightness-125;
+	}
+}
