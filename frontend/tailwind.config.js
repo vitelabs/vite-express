@@ -8,8 +8,6 @@ module.exports = {
 			},
 			colors: {
 				skin: {
-					// 'pending-green': 'var(--pending-green-color)',
-					// 'alert-red': 'var(--alert-red-color)',
 					highlight: 'var(--highlight-color)',
 					medlight: 'var(--medlight-color)',
 					lowlight: 'var(--lowlight-color)',
@@ -31,15 +29,12 @@ module.exports = {
 					base: 'var(--bg-base-color)',
 					middleground: 'var(--bg-middleground-color)',
 					foreground: 'var(--bg-foreground-color)',
-					// // highlight: 'var(--highlight-color)',
 					'line-divider': 'var(--bg-line-divider-color)',
 				},
 			},
 			borderColor: {
 				skin: {
 					foreground: 'var(--bg-foreground-color)',
-					// // highlight: 'var(--highlight-color)',
-					lowlight: 'var(--lowlight-color)',
 				},
 			},
 		},

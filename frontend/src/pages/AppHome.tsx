@@ -18,7 +18,7 @@ const AppHome = ({ i18n, vcInstance, callContract }: Props) => {
 	const amountRef = useRef<TextInputRefObject>();
 
 	return (
-		<div className="space-y-4">
+		<div className="space-y-4 max-w-3xl mx-auto">
 			{vcInstance ? (
 				<>
 					<TextInput

@@ -3,10 +3,6 @@ import ExampleContract from '../contracts/ExampleContract';
 import { setStateType } from './globalContext';
 import { VC } from './viteConnect';
 
-export type Balance = {
-	[tokenId: string]: string;
-};
-
 export type NetworkTypes = 'Testnet' | 'Mainnet' | 'Localnet';
 
 export type State = {

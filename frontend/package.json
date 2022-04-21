@@ -15,8 +15,6 @@
 		"@vite/connector": "0.0.2",
 		"@vite/vitejs": "2.3.17-alpha.5",
 		"@vite/vitejs-ws": "2.3.17-alpha.5",
-		"buffer": "6.0.3",
-		"ethers": "5.5.3",
 		"qrcode": "1.5.0",
 		"react": "^18.0.0",
 		"react-dom": "^18.0.0",
