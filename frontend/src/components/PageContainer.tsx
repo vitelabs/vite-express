@@ -1,61 +1,22 @@
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import {
 	TranslateIcon,
 	SunIcon,
 	MoonIcon,
 	DesktopComputerIcon,
-	LogoutIcon,
 } from '@heroicons/react/outline';
 import A from './A';
 import { NetworkTypes, State } from '../utils/types';
-import { useKeyPress } from '../utils/hooks';
 import { prefersDarkTheme } from '../utils/misc';
 import { connect } from '../utils/globalContext';
-import ConnectWalletButton from '../containers/ConnectWalletButton';
+import WalletButton from '../containers/ViteConnectButton';
 import ViteLogo from '../assets/ViteLogo';
-import { shortenAddress } from '../utils/strings';
 import { PROD } from '../utils/constants';
+import DropdownButton from './DropdownButton';
 
 type Props = State & {
 	noPadding?: boolean;
 	children: ReactNode;
-};
-
-const DropdownButton = ({
-	buttonJsx,
-	dropdownJsx,
-}: {
-	buttonJsx: ReactNode;
-	dropdownJsx: ReactNode;
-}) => {
-	const [open, openSet] = useState(false);
-	const buttonRef = useRef<HTMLButtonElement>(null);
-
-	useKeyPress('Escape', () => {
-		if (buttonRef.current) {
-			buttonRef.current.blur();
-			openSet(false);
-		}
-	});
-
-	return (
-		<div className="relative">
-			<button
-				ref={buttonRef}
-				onClick={() => openSet(!open)}
-				tabIndex={0}
-				className="h-8 xy brightness-button"
-				onBlur={() => openSet(false)}
-			>
-				{buttonJsx}
-			</button>
-			{open && (
-				<div className="rounded-md shadow-md absolute py-0.5 overflow-hidden top-10 right-0 bg-skin-foreground">
-					{dropdownJsx}
-				</div>
-			)}
-		</div>
-	);
 };
 
 const PageContainer = ({
@@ -63,7 +24,6 @@ const PageContainer = ({
 	networkType,
 	languageType,
 	i18n,
-	vcInstance,
 	setState,
 	children,
 }: Props) => {
@@ -127,30 +87,7 @@ const PageContainer = ({
 							</>
 						}
 					/>
-					{vcInstance ? (
-						<DropdownButton
-							buttonJsx={<p>{shortenAddress(vcInstance.accounts[0])}</p>}
-							dropdownJsx={
-								<div className="fx px-2 py-0.5 h-7 gap-2">
-									<LogoutIcon className="h-full text-skin-muted" />
-									<button
-										className="font-semibold"
-										onClick={() => {
-											vcInstance.killSession();
-											setState({ vcInstance: null });
-										}}
-										onMouseDown={(e) => e.preventDefault()}
-									>
-										{i18n.logOut}
-									</button>
-								</div>
-							}
-						/>
-					) : (
-						<ConnectWalletButton className="bg-skin-medlight h-8 px-3 rounded-md brightness-button font-semibold text-white shadow">
-							<p>{i18n.connectWallet}</p>
-						</ConnectWalletButton>
-					)}
+					<WalletButton />
 					<DropdownButton
 						buttonJsx={
 							<div className="w-8 h-8 xy">

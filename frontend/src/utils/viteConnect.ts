@@ -83,13 +83,9 @@ export function getValidVCSession() {
 	return session;
 }
 
-export function initVC(meta?: { session: object; bridge: string }) {
-	const session = getValidVCSession();
-	return new VC(
-		{
-			session,
-			bridge: 'wss://biforst.vite.net',
-		},
-		meta
-	);
+export function initViteConnect(session: object) {
+	return new VC({
+		session,
+		bridge: 'wss://biforst.vite.net',
+	});
 }

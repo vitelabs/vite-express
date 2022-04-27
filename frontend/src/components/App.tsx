@@ -5,7 +5,7 @@ import '../styles/theme.ts';
 import Router from './Router';
 import { Provider } from '../utils/globalContext';
 import { useEffect, useState } from 'react';
-import { getValidVCSession, initVC } from '../utils/viteConnect';
+import { getValidVCSession, initViteConnect } from '../utils/viteConnect';
 import { State } from '../utils/types';
 
 const App = () => {
@@ -13,11 +13,12 @@ const App = () => {
 
 	useEffect(() => {
 		(async () => {
+			const vcSession = getValidVCSession();
 			const state: Pick<State, 'networkType' | 'languageType' | 'vcInstance'> =
 				{
 					networkType: localStorage.networkType || 'Testnet',
 					languageType: localStorage.languageType || 'en',
-					vcInstance: getValidVCSession() ? initVC() : null,
+					vcInstance: vcSession ? initViteConnect(vcSession) : null,
 				};
 			initialStateSet(state);
 		})();
