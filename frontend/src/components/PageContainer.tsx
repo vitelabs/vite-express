@@ -31,9 +31,8 @@ const PageContainer = ({
 
 	useEffect(() => {
 		if (!i18n) {
-			import(`../i18n/${languageType}.json`).then((translation) => {
-				// https://stackoverflow.com/a/67615605/13442719
-				setState({ i18n: { ...translation } });
+			import(`../i18n/${languageType}.ts`).then((translation) => {
+				setState({ i18n: translation.default });
 			});
 		}
 	}, [setState, i18n, languageType]);
