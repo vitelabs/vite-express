@@ -176,13 +176,16 @@ const PageContainer = ({
 				{children}
 			</main>
 			<div className="fx justify-end gap-2 mx-4 my-3 text-skin-muted text-sm">
-				<A href="TODO" className="brightness-button">
+				<A href="https://twitter.com/vitelabs" className="brightness-button">
 					Twitter
 				</A>
-				<A href="TODO" className="brightness-button">
+				<A
+					href="https://github.com/vitelabs/vite-express"
+					className="brightness-button"
+				>
 					GitHub
 				</A>
-				<A href="TODO" className="brightness-button">
+				<A href="https://discord.gg/guFy97ZA" className="brightness-button">
 					Discord
 				</A>
 			</div>
