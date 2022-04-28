@@ -24,7 +24,7 @@ type Props = HTMLProps<HTMLInputElement> & {
 	optional?: boolean;
 	maxLength?: number;
 	type?: string;
-	getIssue?: (value: string) => string | undefined;
+	getIssue?: (value: string) => string | void;
 	_ref?: Function | React.MutableRefObject<TextInputRefObject | undefined>;
 };
 
