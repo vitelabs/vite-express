@@ -1,6 +1,6 @@
-This is a fork of [dapp-buymeacoffee](https://github.com/vitelabs/dapp-buymeacoffee)
+# The official Vite dapp template
 
-# Getting Started with Contracts
+## Getting Started with Contracts
 ```
 npm install
 
@@ -14,7 +14,7 @@ npx ts-node scripts/deploy.ts
 # stake quota for contract(by web-wallet)
 ```
 
-# Getting Started with the Frontend
+## Getting Started with the Frontend
 A frontend created with [create-react-app](https://create-react-app.dev/) using [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/), and [Tailwind CSS](https://tailwindcss.com/) has been created under the `frontend` folder.
 
 Features frontend implements out of the box:
@@ -49,3 +49,7 @@ Features frontend implements out of the box:
 - Toast alerts
 	- Implemented in [Toast.tsx](frontend/src/containers/Toast.tsx)
 	- To use, call `setState({ toast: 'message' })` in a connected component.
+
+
+
+This is a fork of [dapp-buymeacoffee](https://github.com/vitelabs/dapp-buymeacoffee)
