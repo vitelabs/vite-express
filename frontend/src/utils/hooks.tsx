@@ -1,6 +1,10 @@
 import { RefObject, useEffect, useRef } from 'react';
 
-export const useKeyPress = (targetKey: string, handler: () => void, allowDefault?: boolean) => {
+export const useKeyPress = (
+	targetKey: string,
+	handler: () => void,
+	allowDefault?: boolean
+) => {
 	const savedHandler = useRef<() => void>();
 	const called = useRef<boolean>();
 	useEffect(() => {
@@ -29,7 +33,7 @@ export const useKeyPress = (targetKey: string, handler: () => void, allowDefault
 
 export const useTitle = (title?: string) => {
 	useEffect(() => {
-		document.title = `${title ? `${title} - ` : ''}Vite Dapp Template`;
+		document.title = `${title ? `${title} - ` : ''}Vite Express`;
 	}, [title]);
 };
 

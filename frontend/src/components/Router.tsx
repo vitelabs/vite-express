@@ -38,10 +38,9 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 	);
 
 	const viteApi = useMemo(() => {
-		const viteApi = new ViteAPI(rpc, () => {
+		return new ViteAPI(rpc, () => {
 			// console.log('client connected');
 		});
-		return viteApi;
 	}, [networkType]); // eslint-disable-line
 
 	useEffect(() => setState({ viteApi }), [viteApi]); // eslint-disable-line

@@ -1,5 +1,6 @@
 import { ViteAPI } from '@vite/vitejs/distSrc/viteAPI/type';
 import ExampleContract from '../contracts/ExampleContract';
+import en from '../i18n/en';
 import { setStateType } from './globalContext';
 import { VC } from './viteConnect';
 
@@ -18,7 +19,7 @@ export type State = {
 	toast: string;
 	languageType: string;
 	networkType: NetworkTypes;
-	i18n: { [key: string]: string };
+	i18n: typeof en;
 	vcInstance: VC | null;
 	metamaskAddress: string;
 	viteBalanceInfo: ViteBalanceInfo;
