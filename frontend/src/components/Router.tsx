@@ -41,7 +41,7 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 		return new ViteAPI(rpc, () => {
 			// console.log('client connected');
 		});
-	}, [networkType]); // eslint-disable-line
+	}, [rpc]);
 
 	useEffect(() => setState({ viteApi }), [viteApi]); // eslint-disable-line
 

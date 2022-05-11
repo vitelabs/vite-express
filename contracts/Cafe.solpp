@@ -3,7 +3,7 @@
 
 pragma soliditypp >=0.8.0;
 
-contract ExampleContract {
+contract Cafe {
    constructor() payable {}
 
    // Receive Token function
