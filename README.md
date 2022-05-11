@@ -1,4 +1,4 @@
-# The official Vite Express
+# The official Vite dapp template
 
 ## Getting Started with Contracts
 ```
