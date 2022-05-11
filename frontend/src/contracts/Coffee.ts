@@ -1,4 +1,4 @@
-const ExampleContract = {
+const CoffeeContract = {
 	address: {
 		testnet: 'vite_98a3d6d941f35446159b5a84cc8c5708dbc53bb4b642782412',
 		mainnet: '',
@@ -58,4 +58,4 @@ const ExampleContract = {
 	],
 };
 
-export default ExampleContract;
+export default CoffeeContract;

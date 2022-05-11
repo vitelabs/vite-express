@@ -1,7 +1,7 @@
 import { constant, wallet } from '@vite/vitejs';
 import { useRef, useState } from 'react';
 import TextInput, { TextInputRefObject } from '../components/TextInput';
-import ExampleContract from '../contracts/ExampleContract';
+import CoffeeContract from '../contracts/Coffee';
 import { connect } from '../utils/globalContext';
 import { useTitle } from '../utils/hooks';
 import { validateInputs } from '../utils/misc';
@@ -49,7 +49,7 @@ const AppHome = ({ i18n, vcInstance, callContract }: Props) => {
 						onClick={() => {
 							if (validateInputs([beneficiaryAddressRef, amountRef])) {
 								callContract(
-									ExampleContract,
+									CoffeeContract,
 									'buyCoffee',
 									[beneficiaryAddress, amount],
 									constant.Vite_TokenId,

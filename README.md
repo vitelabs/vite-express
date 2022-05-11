@@ -38,8 +38,8 @@ Features frontend implements out of the box:
 	- Implemented in [viteConnect.ts](frontend/src/utils/viteConnect.ts)
 		- This handles saving the ViteConnect session to a browsers `localStorage` to persist it after reloading the page
 		- To call a contract, a `callContract` function is passed to all connected components as a prop.
-		- Contracts should be stored in the contracts folder.
-			- e.g. [ExampleContract.solpp](contracts/ExampleContract.solpp)
+		- Contracts should be stored in the `contracts` folder.
+			- e.g. [coffee_abi.json](contracts/coffee_abi.json) and [coffee_contract.json](contracts/coffee_contract.json)
 - internationalization (i18n)
 	- Translation changes when `languageType` is updated in [PageContainer.tsx](frontend/src/components/PageContainer.tsx)
 	- English translation: [en.json](frontend/src/i18n/en.json)
