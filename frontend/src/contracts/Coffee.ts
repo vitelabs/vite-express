@@ -1,7 +1,8 @@
-const CoffeeContract = {
+const Coffee = {
 	address: {
-		testnet: 'vite_98a3d6d941f35446159b5a84cc8c5708dbc53bb4b642782412',
 		mainnet: '',
+		testnet: 'vite_40a7f24b11036aaa293a0a9751f66c1d88e7a6a13e9d0cb629', // <your_contract_address>
+		localnet: '',
 	},
 	abi: [
 		{ inputs: [], stateMutability: 'payable', type: 'constructor' },
@@ -58,4 +59,4 @@ const CoffeeContract = {
 	],
 };
 
-export default CoffeeContract;
+export default Coffee;

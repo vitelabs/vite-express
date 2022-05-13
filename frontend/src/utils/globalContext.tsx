@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { State } from './types';
 
 // https://stackoverflow.com/a/51365037/13442719
@@ -10,7 +10,10 @@ type RecursivePartial<T> = {
 		: T[P];
 };
 
-export type setStateType = (state: RecursivePartial<State>, meta?: { deepMerge?: boolean }) => void;
+export type setStateType = (
+	state: RecursivePartial<State>,
+	meta?: { deepMerge?: boolean }
+) => void;
 
 type HOCProps = {
 	state: object;
@@ -26,30 +29,36 @@ type ProviderProps = {
 	onSetState?: setStateType;
 };
 
-export const Provider = ({ children, initialState, onSetState }: ProviderProps) => {
-	const [state, setState] = useState({ ...(initialState || {}) });
+export const Provider = ({
+	children,
+	initialState,
+	onSetState,
+}: ProviderProps) => {
+	const [state, stateSet] = useState({ ...(initialState || {}) });
 
+	const setState = useCallback(
+		((stateChanges, options = {}) => {
+			stateSet((prevState) => {
+				const newState = options.deepMerge
+					? deepMerge({ ...prevState }, stateChanges)
+					: { ...prevState, ...stateChanges };
+				onSetState && onSetState(newState, options);
+				return newState;
+			});
+		}) as setStateType,
+		[onSetState]
+	);
 	return (
-		<GlobalContext.Provider
-			value={{
-				state,
-				setState: (stateChanges: object, options: { deepMerge?: boolean } = {}) => {
-					setState((prevState) => {
-						const newState = options.deepMerge
-							? deepMerge({ ...prevState }, stateChanges)
-							: { ...prevState, ...stateChanges };
-						onSetState && onSetState(newState, options);
-						return newState;
-					});
-				},
-			}}
-		>
+		<GlobalContext.Provider value={{ state, setState }}>
 			{children}
 		</GlobalContext.Provider>
 	);
 };
 
-export const deepMerge = (target: { [key: string]: any }, source: { [key: string]: any }) => {
+export const deepMerge = (
+	target: { [key: string]: any },
+	source: { [key: string]: any }
+) => {
 	if (target && source) {
 		for (const key in source) {
 			if (

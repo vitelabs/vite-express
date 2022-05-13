@@ -10,13 +10,12 @@ import { State } from '../utils/types';
 
 const App = () => {
 	const [initialState, initialStateSet] = useState<object>();
-
 	useEffect(() => {
 		(async () => {
 			const vcSession = getValidVCSession();
 			const state: Pick<State, 'networkType' | 'languageType' | 'vcInstance'> =
 				{
-					networkType: localStorage.networkType || 'Testnet',
+					networkType: localStorage.networkType || 'testnet',
 					languageType: localStorage.languageType || 'en',
 					vcInstance: vcSession ? initViteConnect(vcSession) : null,
 				};

@@ -22,19 +22,22 @@ const Toast = ({ setState, toast }: Props) => {
 		}
 	}, [setState, toast]);
 
-	const toastParent: HTMLElement | null = useMemo(() => document.getElementById('toast'), []);
+	const toastParent: HTMLElement | null = useMemo(
+		() => document.getElementById('toast'),
+		[]
+	);
 
 	return !toast || !toastParent
 		? null
 		: ReactDOM.createPortal(
 				<div className="fixed z-50 top-5 w-full pointer-events-none xy">
 					<div
-						className={`pointer-events-auto bg-skin-toast shadow-skin-base relative px-8 py-5 rounded-sm overflow-hidden transition-transform duration-300 ${
+						className={`pointer-events-auto bg-skin-foreground relative px-4 py-3 rounded-sm overflow-hidden transition-transform duration-300 ${
 							visible ? 'scale-1' : 'scale-0'
 						}`}
 					>
 						<div className="absolute top-0 left-0 h-full w-1 toast-line-gradient" />
-						<p className="text-sm">{toast}</p>
+						<p>{toast}</p>
 					</div>
 				</div>,
 				toastParent

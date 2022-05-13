@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 import {
 	TranslateIcon,
 	SunIcon,
@@ -37,11 +37,14 @@ const PageContainer = ({
 		}
 	}, [setState, i18n, languageType]);
 
-	const networkTypes: NetworkTypes[] = [
-		'Testnet',
-		'Mainnet',
-		...(PROD ? [] : ['Localnet' as NetworkTypes]),
-	];
+	const networkTypes = useMemo(() => {
+		const arr: [NetworkTypes, string][] = [
+			['mainnet', i18n?.mainnet],
+			['testnet', i18n?.testnet],
+		];
+		!PROD && arr.push(['localnet', i18n?.localnet]);
+		return arr;
+	}, [i18n]);
 
 	const languages = [
 		['English', 'en'],
@@ -57,29 +60,40 @@ const PageContainer = ({
 	return !i18n ? null : (
 		<div className="h-0 min-h-screen relative flex flex-col">
 			<header className="fx px-2 h-12 justify-between top-[1px] w-full fixed z-50">
-				<A to="/" className="px-1 h-8">
-					<ViteLogo className="text-skin-base h-7" />
-				</A>
+				<div className="fx gap-3">
+					<A to="/" className="px-1 h-8">
+						<ViteLogo className="text-skin-base h-7" />
+					</A>
+					<A to="/app" className="text-skin-secondary">
+						{i18n.app}
+					</A>
+					<A to="/history" className="text-skin-secondary">
+						{i18n.history}
+					</A>
+				</div>
 				<div className="fx gap-3 relative">
 					<DropdownButton
-						buttonJsx={<p className="text-skin-secondary">{networkType}</p>}
+						buttonJsx={
+							<p className="text-skin-secondary">{i18n[networkType]}</p>
+						}
 						dropdownJsx={
 							<>
-								{networkTypes.map((network) => {
-									const active = localStorage.networkType === network;
+								{networkTypes.map(([networkType, label]) => {
+									const active =
+										(localStorage.networkType || 'testnet') === networkType;
 									return (
 										<button
-											key={network}
+											key={networkType}
 											className={`fx font-semibold px-2 w-full h-7 bg-skin-foreground brightness-button ${
 												active ? 'text-skin-highlight' : ''
 											}`}
 											onMouseDown={(e) => e.preventDefault()}
 											onClick={() => {
-												localStorage.networkType = network;
-												setState({ networkType: network });
+												localStorage.networkType = networkType;
+												setState({ networkType });
 											}}
 										>
-											{network}
+											{label}
 										</button>
 									);
 								})}
@@ -185,7 +199,7 @@ const PageContainer = ({
 				>
 					GitHub
 				</A>
-				<A href="https://discord.gg/guFy97ZA" className="brightness-button">
+				<A href="https://discord.gg/AEnScAQA" className="brightness-button">
 					Discord
 				</A>
 			</div>

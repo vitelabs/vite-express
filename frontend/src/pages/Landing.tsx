@@ -10,7 +10,7 @@ const Landing = ({ i18n }: Props) => {
 	return (
 		<div>
 			<div className="bg-skin-base">
-				<div className="xy flex-col h-[35rem] max-h-screen">
+				<div className="xy flex-col h-[25rem] max-h-screen">
 					<p className="text-4xl font-extrabold">Vite Express</p>
 					<p className="mt-2 text-3xl text-skin-secondary">
 						Let's build something cool

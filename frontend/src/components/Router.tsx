@@ -2,15 +2,16 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import WS_RPC from '@vite/vitejs-ws';
 import { accountBlock, ViteAPI } from '@vite/vitejs';
-import LandingPage from '../pages/Landing';
-import AppHomePage from '../pages/AppHome';
+import Landing from '../pages/Landing';
+import AppHome from '../pages/AppHome';
 import { connect } from '../utils/globalContext';
-import { NewAccountBlock, State, ViteBalanceInfo } from '../utils/types';
+import { State, ViteBalanceInfo } from '../utils/types';
 import Toast from '../containers/Toast';
 import { VCSessionKey } from '../utils/viteConnect';
 import { PROD } from '../utils/constants';
 import PageContainer from './PageContainer';
 import CoffeeContract from '../contracts/Coffee';
+import History from '../pages/History';
 
 const providerWsURLs = {
 	...(PROD ? {} : { localnet: 'ws://localhost:23457' }),
@@ -28,7 +29,7 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 	const rpc = useMemo(
 		() =>
 			new WS_RPC(
-				networkType === 'Mainnet'
+				networkType === 'mainnet'
 					? providerWsURLs.mainnet
 					: providerWsURLs.testnet,
 				providerTimeout,
@@ -43,7 +44,7 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 		});
 	}, [rpc]);
 
-	useEffect(() => setState({ viteApi }), [viteApi]); // eslint-disable-line
+	useEffect(() => setState({ viteApi }), [setState, viteApi]);
 
 	const getBalanceInfo = useCallback(
 		(address: string) => {
@@ -76,14 +77,13 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 		}
 	}, [setState, getBalanceInfo, vcInstance]);
 
-	useEffect(updateViteBalanceInfo, [vcInstance]); // eslint-disable-line
+	useEffect(updateViteBalanceInfo, [updateViteBalanceInfo]);
 
 	useEffect(() => {
 		if (vcInstance) {
 			subscribe('newAccountBlocksByAddr', vcInstance.accounts[0])
 				.then((event: any) => {
-					event.on((result: NewAccountBlock) => {
-						// NOTE: seems like a hack cuz I don't even need the block info
+					event.on(() => {
 						updateViteBalanceInfo();
 					});
 				})
@@ -100,22 +100,19 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 			tokenId?: string,
 			amount?: string
 		) => {
+			if (!vcInstance) {
+				return;
+			}
 			const methodAbi = contract.abi.find(
 				(x: any) => x.name === methodName && x.type === 'function'
 			);
 			if (!methodAbi) {
 				throw new Error(`method not found: ${methodName}`);
 			}
-			const toAddress =
-				contract.address[networkType === 'Mainnet' ? 'mainnet' : 'testnet'];
+			const toAddress = contract.address[networkType];
 			if (!toAddress) {
 				throw new Error(`${networkType} contract address not found`);
 			}
-
-			console.log('connectedAccount:', connectedAccount);
-			console.log('toAddress:', toAddress);
-			console.log('tokenId:', tokenId);
-			console.log('amount:', amount);
 			const block = accountBlock.createAccountBlock('callContract', {
 				address: connectedAccount,
 				abi: methodAbi,
@@ -124,21 +121,21 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 				tokenId,
 				amount,
 			}).accountBlock;
-
-			if (vcInstance) {
-				return vcInstance.signAndSendTx([{ block }]);
-			}
+			return vcInstance.signAndSendTx([{ block }]);
 		},
 		[connectedAccount, networkType, vcInstance]
 	);
-	useEffect(() => setState({ callContract }), [callContract]); // eslint-disable-line
+	useEffect(() => {
+		setState({ callContract });
+	}, [setState, callContract]);
 
 	return (
 		<BrowserRouter>
 			<PageContainer>
 				<Routes>
-					<Route path="/" element={<LandingPage />} />
-					<Route path="/app" element={<AppHomePage />} />
+					<Route path="/" element={<Landing />} />
+					<Route path="/app" element={<AppHome />} />
+					<Route path="/history" element={<History />} />
 					<Route path="*" element={<Navigate to="/" />} />
 				</Routes>
 			</PageContainer>

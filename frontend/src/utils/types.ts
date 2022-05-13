@@ -4,7 +4,7 @@ import en from '../i18n/en';
 import { setStateType } from './globalContext';
 import { VC } from './viteConnect';
 
-export type NetworkTypes = 'Testnet' | 'Mainnet' | 'Localnet';
+export type NetworkTypes = 'testnet' | 'mainnet' | 'localnet';
 
 export type State = {
 	setState: setStateType;
@@ -14,6 +14,12 @@ export type State = {
 		params?: any[],
 		tokenId?: string,
 		amount?: string
+	) => Promise<object>;
+	scanEvents: (
+		abi: any[],
+		address: string,
+		fromHeight: string,
+		eventName: string
 	) => Promise<object>;
 	viteApi: ViteAPI;
 	toast: string;
@@ -61,4 +67,21 @@ export type NewAccountBlock = {
 	height: number;
 	heightStr: string;
 	removed: boolean;
+};
+
+export type CoffeeBuyEvent = {
+	returnValues: {
+		from: string;
+		to: string;
+		num: string;
+	};
+	event: string;
+	raw: {
+		data: string;
+		topics: [string];
+	};
+	signature: string;
+	accountBlockHeight: string;
+	accountBlockHash: string;
+	address: string;
 };
