@@ -19,7 +19,7 @@ const AppHome = ({ i18n, vcInstance, callContract, setState }: Props) => {
 	const [beneficiaryAddress, beneficiaryAddressSet] = useState(
 		searchParams.get('address') || ''
 	);
-	const [amount, amountSet] = useState('');
+	const [amount, amountSet] = useState(searchParams.get('amount') || '');
 	const beneficiaryAddressRef = useRef<TextInputRefObject>();
 	const amountRef = useRef<TextInputRefObject>();
 
