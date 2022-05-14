@@ -10,7 +10,7 @@ import Toast from '../containers/Toast';
 import { VCSessionKey } from '../utils/viteConnect';
 import { PROD } from '../utils/constants';
 import PageContainer from './PageContainer';
-import CoffeeContract from '../contracts/Coffee';
+import CafeContract from '../contracts/Cafe';
 import History from '../pages/History';
 
 const providerWsURLs = {
@@ -94,7 +94,7 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 
 	const callContract = useCallback(
 		(
-			contract: typeof CoffeeContract,
+			contract: typeof CafeContract,
 			methodName: string,
 			params: any[] = [],
 			tokenId?: string,

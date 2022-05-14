@@ -1,6 +1,6 @@
 import { RefreshIcon } from '@heroicons/react/outline';
 import { useCallback, useEffect, useState } from 'react';
-import Coffee from '../contracts/Coffee';
+import Cafe from '../contracts/Cafe';
 import { connect } from '../utils/globalContext';
 import { useTitle } from '../utils/hooks';
 import { shortenAddress } from '../utils/strings';
@@ -15,8 +15,8 @@ const History = ({ i18n, viteApi, networkType, setState }: Props) => {
 
 	const updateEvents = useCallback(() => {
 		eventsSet(undefined);
-		const contractAddress = Coffee.address[networkType];
-		getPastEvents(viteApi, contractAddress, Coffee.abi, 'Buy', {
+		const contractAddress = Cafe.address[networkType];
+		getPastEvents(viteApi, contractAddress, Cafe.abi, 'Buy', {
 			fromHeight: 0,
 			toHeight: 0,
 		})

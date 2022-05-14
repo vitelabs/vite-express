@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Modal from '../components/Modal';
 import TextInput, { TextInputRefObject } from '../components/TextInput';
-import CoffeeContract from '../contracts/Coffee';
+import CafeContract from '../contracts/Cafe';
 import { connect } from '../utils/globalContext';
 import { useTitle } from '../utils/hooks';
 import { validateInputs } from '../utils/misc';
@@ -65,7 +65,7 @@ const AppHome = ({ i18n, vcInstance, callContract, setState }: Props) => {
 					if (validateInputs([beneficiaryAddressRef, amountRef])) {
 						promptTxConfirmationSet(true);
 						await callContract(
-							CoffeeContract,
+							CafeContract,
 							'buyCoffee',
 							[beneficiaryAddress, amount],
 							constant.Vite_TokenId,

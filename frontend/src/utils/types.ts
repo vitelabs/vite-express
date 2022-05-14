@@ -1,5 +1,5 @@
 import { ViteAPI } from '@vite/vitejs/distSrc/viteAPI/type';
-import CoffeeContract from '../contracts/Coffee';
+import CafeContract from '../contracts/Cafe';
 import en from '../i18n/en';
 import { setStateType } from './globalContext';
 import { VC } from './viteConnect';
@@ -9,7 +9,7 @@ export type NetworkTypes = 'testnet' | 'mainnet' | 'localnet';
 export type State = {
 	setState: setStateType;
 	callContract: (
-		contract: typeof CoffeeContract,
+		contract: typeof CafeContract,
 		methodName: string,
 		params?: any[],
 		tokenId?: string,
