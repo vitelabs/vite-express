@@ -23,7 +23,7 @@ Features frontend implements out of the box:
 	- Implemented in [Router.tsx](frontend/src/components/Router.tsx)
 - Global state management using a [higher-order component](https://reactjs.org/docs/higher-order-components.html) called `connect` which connects the passed in component to a single [context](https://reactjs.org/docs/context.html).
 	- Implemented in [globalContext.tsx](frontend/src/utils/globalContext.tsx)
-	- THe initial global state is set in [App.tsx](frontend/src/components/App.tsx)
+	- The initial global state is set in [App.tsx](frontend/src/components/App.tsx)
 	- To mutate the global state, a `setState` function is passed to all connected components as a prop.
 		- Pass an object to it and its properties will be shallow merged with the current global state
 			- e.g. `setState({ networkType: network })`

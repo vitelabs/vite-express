@@ -36,8 +36,8 @@ export const Provider = ({
 }: ProviderProps) => {
 	const [state, stateSet] = useState({ ...(initialState || {}) });
 
-	const setState = useCallback(
-		((stateChanges, options = {}) => {
+	const setState = useCallback<setStateType>(
+		(stateChanges, options = {}) => {
 			stateSet((prevState) => {
 				const newState = options.deepMerge
 					? deepMerge({ ...prevState }, stateChanges)
@@ -45,7 +45,7 @@ export const Provider = ({
 				onSetState && onSetState(newState, options);
 				return newState;
 			});
-		}) as setStateType,
+		},
 		[onSetState]
 	);
 	return (
