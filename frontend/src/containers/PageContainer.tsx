@@ -5,14 +5,14 @@ import {
 	MoonIcon,
 	DesktopComputerIcon,
 } from '@heroicons/react/outline';
-import A from './A';
+import A from '../components/A';
 import { NetworkTypes, State } from '../utils/types';
 import { prefersDarkTheme } from '../utils/misc';
 import { connect } from '../utils/globalContext';
-import WalletButton from '../containers/ViteConnectButton';
+import WalletButton from './ViteConnectButton';
 import ViteLogo from '../assets/ViteLogo';
 import { PROD } from '../utils/constants';
-import DropdownButton from './DropdownButton';
+import DropdownButton from '../components/DropdownButton';
 
 type Props = State & {
 	noPadding?: boolean;

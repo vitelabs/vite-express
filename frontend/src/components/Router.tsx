@@ -9,7 +9,7 @@ import { State, ViteBalanceInfo } from '../utils/types';
 import Toast from '../containers/Toast';
 import { VCSessionKey } from '../utils/viteConnect';
 import { PROD } from '../utils/constants';
-import PageContainer from './PageContainer';
+import PageContainer from '../containers/PageContainer';
 import CafeContract from '../contracts/Cafe';
 import History from '../pages/History';
 

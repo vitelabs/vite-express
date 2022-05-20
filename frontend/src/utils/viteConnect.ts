@@ -30,7 +30,7 @@ export class VC extends Connector {
 	}
 
 	setAccState(accounts: string[] = []) {
-		if (!accounts || !accounts[0]) throw new Error('addresolves is null');
+		if (!accounts || !accounts[0]) throw new Error('address is null');
 		this.saveSession();
 	}
 

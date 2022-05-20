@@ -24,6 +24,7 @@ const en = {
 	cups: 'Cups',
 	from: 'From',
 	to: 'To',
+	beneficiaryAddress: 'Beneficiary address',
 	'': '',
 };
 

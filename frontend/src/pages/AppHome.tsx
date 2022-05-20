@@ -30,7 +30,7 @@ const AppHome = ({ i18n, vcInstance, callContract, setState }: Props) => {
 			<TextInput
 				_ref={beneficiaryAddressRef}
 				disabled={!vcInstance}
-				label="Beneficiary address"
+				label={i18n.beneficiaryAddress}
 				value={beneficiaryAddress}
 				onUserInput={(v) => beneficiaryAddressSet(v.trim())}
 				getIssue={(v) => {
