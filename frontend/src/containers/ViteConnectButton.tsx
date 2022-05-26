@@ -6,7 +6,7 @@ import QR from '../components/QR';
 import { connect } from '../utils/globalContext';
 import { shortenAddress } from '../utils/strings';
 import { State } from '../utils/types';
-import { getValidVCSession, initViteConnect } from '../utils/viteConnect';
+import { initViteConnect } from '../utils/viteConnect';
 
 type Props = State & {
 	children: ReactNode;
@@ -20,7 +20,7 @@ const ViteConnectButton = ({ setState, i18n, vcInstance }: Props) => {
 		if (vcInstance) {
 			vcInstance.on('disconnect', () => setState({ vcInstance: null }));
 		}
-	}, [vcInstance]); // eslint-disable-line
+	}, [setState, vcInstance]);
 
 	return vcInstance ? (
 		<DropdownButton
@@ -43,8 +43,7 @@ const ViteConnectButton = ({ setState, i18n, vcInstance }: Props) => {
 			<button
 				className="bg-skin-medlight h-8 px-3 rounded-md brightness-button font-semibold text-white shadow"
 				onClick={async () => {
-					const vcSession = getValidVCSession();
-					vcInstance = initViteConnect(vcSession);
+					vcInstance = initViteConnect();
 					connectURISet(await vcInstance.createSession());
 					vcInstance.on('connect', () => {
 						connectURISet('');

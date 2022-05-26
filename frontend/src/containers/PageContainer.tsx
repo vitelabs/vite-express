@@ -9,7 +9,7 @@ import A from '../components/A';
 import { NetworkTypes, State } from '../utils/types';
 import { prefersDarkTheme } from '../utils/misc';
 import { connect } from '../utils/globalContext';
-import WalletButton from './ViteConnectButton';
+import ViteConnectButton from './ViteConnectButton';
 import ViteLogo from '../assets/ViteLogo';
 import { PROD } from '../utils/constants';
 import DropdownButton from '../components/DropdownButton';
@@ -100,7 +100,7 @@ const PageContainer = ({
 							</>
 						}
 					/>
-					<WalletButton />
+					<ViteConnectButton />
 					<DropdownButton
 						buttonJsx={
 							<div className="w-8 h-8 xy">

@@ -83,7 +83,7 @@ export function getValidVCSession() {
 	return session;
 }
 
-export function initViteConnect(session: object) {
+export function initViteConnect(session?: object) {
 	return new VC({
 		session,
 		bridge: 'wss://biforst.vite.net',
