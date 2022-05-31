@@ -30,12 +30,10 @@ const PageContainer = ({
 	const [theme, themeSet] = useState(localStorage.theme);
 
 	useEffect(() => {
-		if (!i18n) {
-			import(`../i18n/${languageType}.ts`).then((translation) => {
-				setState({ i18n: translation.default });
-			});
-		}
-	}, [setState, i18n, languageType]);
+		import(`../i18n/${languageType}.ts`).then((translation) => {
+			setState({ i18n: translation.default });
+		});
+	}, [setState, languageType]);
 
 	const networkTypes = useMemo(() => {
 		const arr: [NetworkTypes, string][] = [
