@@ -1,10 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-export const useKeyPress = (
-	targetKey: string,
-	handler: () => void,
-	allowDefault?: boolean
-) => {
+export const useKeyPress = (targetKey: string, handler: () => void, allowDefault?: boolean) => {
 	const savedHandler = useRef<() => void>();
 	const called = useRef<boolean>();
 	useEffect(() => {

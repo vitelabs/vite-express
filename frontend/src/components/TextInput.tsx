@@ -28,11 +28,7 @@ type Props = HTMLProps<HTMLInputElement> & {
 	_ref?: Function | React.MutableRefObject<TextInputRefObject | undefined>;
 };
 
-const normalizeNumericInput = (
-	str: string,
-	decimals = 6,
-	removeInsignificantZeros = false
-) => {
+const normalizeNumericInput = (str: string, decimals = 6, removeInsignificantZeros = false) => {
 	if (Number.isNaN(+str) || !str) {
 		return '';
 	}
@@ -100,11 +96,7 @@ const TextInput = ({
 						}, 0);
 					}}
 				>
-					{visible ? (
-						<EyeOffIcon className="text-inherit" />
-					) : (
-						<EyeIcon className="text-inherit" />
-					)}
+					{visible ? <EyeOffIcon className="text-inherit" /> : <EyeIcon className="text-inherit" />}
 				</button>
 			)}
 			<Tag
@@ -184,9 +176,7 @@ const TextInput = ({
 					}
 				}}
 			/>
-			{issue && (
-				<p className="mt-1 text-sm leading-3 font-bold text-red-500">{issue}</p>
-			)}
+			{issue && <p className="mt-1 text-sm leading-3 font-bold text-red-500">{issue}</p>}
 		</div>
 	);
 };

@@ -1,34 +1,34 @@
 {
-  "name": "buymeacoffe",
-  "version": "0.0.1",
-  "description": "",
-  "main": "app.js",
-  "scripts": {},
-  "author": "shan@vite.org",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/chai": "^4.2.21",
-    "@types/chai-like": "^1.1.1",
-    "@types/chai-things": "^0.0.35",
-    "@types/mocha": "^9.0.0",
-    "@types/node": "^14.6.2",
-    "@vite/vuilder": "0.1.0-alpha.12",
-    "axios": "^0.21.4",
-    "chai": "^4.3.4",
-    "chai-like": "^1.1.1",
-    "chai-things": "^0.2.0",
-    "get-stream": "^6.0.1",
-    "mocha": "^9.1.1",
-    "nodemon": "^2.0.4",
-    "ts-node": "^9.0.0",
-    "typescript": "^4.0.2"
-  },
-  "dependencies": {
-    "@vite/solppc": "^0.8.1-alpha.4",
-    "@vite/vitejs": "^2.3.17",
-    "@vite/vitejs-accountblock": "^2.3.17",
-    "@vite/vitejs-http": "^2.3.17",
-    "@vite/vitejs-ipc": "^2.3.17",
-    "@vite/vitejs-ws": "^2.3.17"
-  }
+	"name": "buymeacoffe",
+	"version": "0.0.1",
+	"description": "",
+	"main": "app.js",
+	"scripts": {},
+	"author": "shan@vite.org",
+	"license": "ISC",
+	"devDependencies": {
+		"@types/chai": "^4.2.21",
+		"@types/chai-like": "^1.1.1",
+		"@types/chai-things": "^0.0.35",
+		"@types/mocha": "^9.0.0",
+		"@types/node": "^14.6.2",
+		"@vite/vuilder": "0.1.0-alpha.12",
+		"axios": "^0.21.4",
+		"chai": "^4.3.4",
+		"chai-like": "^1.1.1",
+		"chai-things": "^0.2.0",
+		"get-stream": "^6.0.1",
+		"mocha": "^9.1.1",
+		"nodemon": "^2.0.4",
+		"ts-node": "^9.0.0",
+		"typescript": "^4.0.2"
+	},
+	"dependencies": {
+		"@vite/solppc": "^0.8.1-alpha.4",
+		"@vite/vitejs": "^2.3.17",
+		"@vite/vitejs-accountblock": "^2.3.17",
+		"@vite/vitejs-http": "^2.3.17",
+		"@vite/vitejs-ipc": "^2.3.17",
+		"@vite/vitejs-ws": "^2.3.17"
+	}
 }

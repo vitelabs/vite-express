@@ -29,9 +29,7 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 	const rpc = useMemo(
 		() =>
 			new WS_RPC(
-				networkType === 'mainnet'
-					? providerWsURLs.mainnet
-					: providerWsURLs.testnet,
+				networkType === 'mainnet' ? providerWsURLs.mainnet : providerWsURLs.testnet,
 				providerTimeout,
 				providerOptions
 			),

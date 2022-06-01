@@ -10,10 +10,7 @@ type RecursivePartial<T> = {
 		: T[P];
 };
 
-export type setStateType = (
-	state: RecursivePartial<State>,
-	meta?: { deepMerge?: boolean }
-) => void;
+export type setStateType = (state: RecursivePartial<State>, meta?: { deepMerge?: boolean }) => void;
 
 type HOCProps = {
 	state: object;
@@ -29,11 +26,7 @@ type ProviderProps = {
 	onSetState?: setStateType;
 };
 
-export const Provider = ({
-	children,
-	initialState,
-	onSetState,
-}: ProviderProps) => {
+export const Provider = ({ children, initialState, onSetState }: ProviderProps) => {
 	const [state, stateSet] = useState({ ...(initialState || {}) });
 
 	const setState = useCallback<setStateType>(
@@ -48,17 +41,10 @@ export const Provider = ({
 		},
 		[onSetState]
 	);
-	return (
-		<GlobalContext.Provider value={{ state, setState }}>
-			{children}
-		</GlobalContext.Provider>
-	);
+	return <GlobalContext.Provider value={{ state, setState }}>{children}</GlobalContext.Provider>;
 };
 
-export const deepMerge = (
-	target: { [key: string]: any },
-	source: { [key: string]: any }
-) => {
+export const deepMerge = (target: { [key: string]: any }, source: { [key: string]: any }) => {
 	if (target && source) {
 		for (const key in source) {
 			if (

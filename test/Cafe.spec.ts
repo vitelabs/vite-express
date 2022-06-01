@@ -29,9 +29,7 @@ describe('test Cafe', () => {
 		// check default balance
 		expect(await cafe.balance()).to.be.equal('0');
 		// check default value of data
-		expect(await cafe.query('price', [])).to.be.deep.equal([
-			'1000000000000000000',
-		]);
+		expect(await cafe.query('price', [])).to.be.deep.equal(['1000000000000000000']);
 
 		// call Cafe.buyCoffee(to, numOfCups);
 		const block = await cafe.call(

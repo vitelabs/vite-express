@@ -4,7 +4,9 @@ export const isDarkMode = () => document.documentElement.classList.contains('dar
 
 export const prefersDarkTheme = () => window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-export const validateInputs = (inputRefs: React.MutableRefObject<TextInputRefObject | undefined>[]) => {
+export const validateInputs = (
+	inputRefs: React.MutableRefObject<TextInputRefObject | undefined>[]
+) => {
 	let allRefsInputsAreValid = true;
 	for (const ref of inputRefs) {
 		let isValid = ref.current!.isValid;

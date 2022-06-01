@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from '../utils/globalContext';
 import { State } from '../utils/types';
@@ -7,6 +7,8 @@ type Props = State;
 
 let visibleTimer: NodeJS.Timeout;
 let closeTimer: NodeJS.Timeout;
+
+const toastParent: HTMLElement = document.getElementById('toast')!;
 
 const Toast = ({ setState, toast }: Props) => {
 	const [visible, visibleSet] = useState(false);
@@ -21,11 +23,6 @@ const Toast = ({ setState, toast }: Props) => {
 			}, 3000);
 		}
 	}, [setState, toast]);
-
-	const toastParent: HTMLElement | null = useMemo(
-		() => document.getElementById('toast'),
-		[]
-	);
 
 	return !toast || !toastParent
 		? null

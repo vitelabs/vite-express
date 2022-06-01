@@ -51,11 +51,7 @@ const MONTHS = [
 	'December',
 ];
 
-export const formatDate = (
-	date: number | Date,
-	verbose?: boolean,
-	utc?: boolean
-) => {
+export const formatDate = (date: number | Date, verbose?: boolean, utc?: boolean) => {
 	if (!date) {
 		return;
 	}

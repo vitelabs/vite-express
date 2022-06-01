@@ -9,7 +9,7 @@ npx vuilder test
 
 # deploy contract
 # edit scripts/deploy.config.json && run deploy scripts
-npx ts-node scripts/deploy.ts 
+npx ts-node scripts/deploy.ts
 
 # stake quota for contract(by web-wallet)
 
@@ -28,10 +28,10 @@ Features frontend implements out of the box:
 		- Pass an object to it and its properties will be shallow merged with the current global state
 			- e.g. `setState({ networkType: network })`
 			- To deep merge, pass a second meta object to `setState` like:
-				 ```ts
-				 setState({ a: { b: 'c' } }, { deepMerge: true })
-				 // { a: { d: 3 } } => { a: { d: 3, b: 'c' } }
-				 ```
+				```ts
+				setState({ a: { b: 'c' } }, { deepMerge: true });
+				// { a: { d: 3 } } => { a: { d: 3, b: 'c' } }
+				```
 	- Note: all non-page component that are connected go in the `containers` folder, else they go in the `components` folder.
 	- The `State` type can be modified in [types.ts](frontend/src/utils/types.ts)
 - [ViteConnect](https://github.com/vitelabs/vite-connect-client) for signing transactions with the Vite Wallet [iOS](https://apps.apple.com/us/app/vite-multi-chain-wallet/id1437629486) / [Android](https://play.google.com/store/apps/details?id=net.vite.wallet) app
@@ -50,7 +50,5 @@ Features frontend implements out of the box:
 - Toast alerts
 	- Implemented in [Toast.tsx](frontend/src/containers/Toast.tsx)
 	- To use, call `setState({ toast: 'message' })` in a connected component.
-
-
 
 This is a fork of [dapp-buymeacoffee](https://github.com/vitelabs/dapp-buymeacoffee)

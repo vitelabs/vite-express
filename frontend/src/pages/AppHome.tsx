@@ -16,9 +16,7 @@ const AppHome = ({ i18n, vcInstance, callContract, setState }: Props) => {
 	useTitle(i18n.app);
 	const [searchParams] = useSearchParams();
 	const [promptTxConfirmation, promptTxConfirmationSet] = useState(false);
-	const [beneficiaryAddress, beneficiaryAddressSet] = useState(
-		searchParams.get('address') || ''
-	);
+	const [beneficiaryAddress, beneficiaryAddressSet] = useState(searchParams.get('address') || '');
 	const [amount, amountSet] = useState(searchParams.get('amount') || '');
 	const beneficiaryAddressRef = useRef<TextInputRefObject>();
 	const amountRef = useRef<TextInputRefObject>();

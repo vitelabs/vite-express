@@ -1,10 +1,5 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react';
-import {
-	TranslateIcon,
-	SunIcon,
-	MoonIcon,
-	DesktopComputerIcon,
-} from '@heroicons/react/outline';
+import { TranslateIcon, SunIcon, MoonIcon, DesktopComputerIcon } from '@heroicons/react/outline';
 import A from '../components/A';
 import { NetworkTypes, State } from '../utils/types';
 import { prefersDarkTheme } from '../utils/misc';
@@ -71,14 +66,11 @@ const PageContainer = ({
 				</div>
 				<div className="fx gap-3 relative">
 					<DropdownButton
-						buttonJsx={
-							<p className="text-skin-secondary">{i18n[networkType]}</p>
-						}
+						buttonJsx={<p className="text-skin-secondary">{i18n[networkType]}</p>}
 						dropdownJsx={
 							<>
 								{networkTypes.map(([networkType, label]) => {
-									const active =
-										(localStorage.networkType || 'testnet') === networkType;
+									const active = (localStorage.networkType || 'testnet') === networkType;
 									return (
 										<button
 											key={networkType}
@@ -135,9 +127,7 @@ const PageContainer = ({
 							<div className="w-8 h-8 xy">
 								<div
 									className={`w-7 h-7 ${
-										theme === 'system'
-											? 'text-skin-muted'
-											: 'text-skin-highlight'
+										theme === 'system' ? 'text-skin-muted' : 'text-skin-highlight'
 									}`}
 								>
 									<SunIcon className="block dark:hidden" />
@@ -169,11 +159,7 @@ const PageContainer = ({
 													active ? 'text-skin-highlight' : 'text-skin-secondary'
 												}`}
 											/>
-											<p
-												className={`font-semibold ${
-													active ? 'text-skin-highlight' : ''
-												}`}
-											>
+											<p className={`font-semibold ${active ? 'text-skin-highlight' : ''}`}>
 												{label[0].toUpperCase() + label.substring(1)}
 											</p>
 										</button>
@@ -184,17 +170,12 @@ const PageContainer = ({
 					/>
 				</div>
 			</header>
-			<main className={`flex-1 ${noPadding ? '' : 'px-4 pt-14'}`}>
-				{children}
-			</main>
+			<main className={`flex-1 ${noPadding ? '' : 'px-4 pt-14'}`}>{children}</main>
 			<div className="fx justify-end gap-2 mx-4 my-3 text-skin-muted text-sm">
 				<A href="https://twitter.com/vitelabs" className="brightness-button">
 					Twitter
 				</A>
-				<A
-					href="https://github.com/vitelabs/vite-express"
-					className="brightness-button"
-				>
+				<A href="https://github.com/vitelabs/vite-express" className="brightness-button">
 					GitHub
 				</A>
 				<A href="https://discord.gg/AEnScAQA" className="brightness-button">

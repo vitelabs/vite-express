@@ -55,9 +55,7 @@ const ViteConnectButton = ({ setState, i18n, vcInstance }: Props) => {
 			</button>
 			{!!connectURI && (
 				<Modal onClose={() => connectURISet('')}>
-					<p className="text-center text-lg mb-3 font-semibold">
-						{i18n.scanWithYourViteWalletApp}
-					</p>
+					<p className="text-center text-lg mb-3 font-semibold">{i18n.scanWithYourViteWalletApp}</p>
 					<div className="xy">
 						<QR data={connectURI} />
 					</div>
