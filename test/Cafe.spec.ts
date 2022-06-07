@@ -1,4 +1,4 @@
-// import { describe } from "mocha";
+import { describe } from 'mocha';
 import { expect } from 'chai';
 const vuilder = require('@vite/vuilder');
 import config from './vite.config.json';
