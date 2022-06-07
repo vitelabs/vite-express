@@ -6,10 +6,10 @@ import Landing from '../pages/Landing';
 import AppHome from '../pages/AppHome';
 import { connect } from '../utils/globalContext';
 import { State, ViteBalanceInfo } from '../utils/types';
-import Toast from '../containers/Toast';
+import Toast from './Toast';
 import { VCSessionKey } from '../utils/viteConnect';
 import { PROD } from '../utils/constants';
-import PageContainer from '../containers/PageContainer';
+import PageContainer from './PageContainer';
 import CafeContract from '../contracts/Cafe';
 import History from '../pages/History';
 

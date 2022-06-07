@@ -2,7 +2,7 @@ import '../styles/reset.css';
 import '../styles/colors.css';
 import '../styles/classes.css';
 import '../styles/theme.ts';
-import Router from './Router';
+import Router from '../containers/Router';
 import { Provider } from '../utils/globalContext';
 import { useEffect, useState } from 'react';
 import { getValidVCSession, initViteConnect } from '../utils/viteConnect';
