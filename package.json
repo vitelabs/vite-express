@@ -3,7 +3,11 @@
 	"version": "0.0.1",
 	"description": "",
 	"main": "app.js",
-	"scripts": {},
+	"scripts": {
+		"test": "npx vuilder test",
+		"deploy": "npx ts-node scripts/deploy.ts",
+		"compile": "npx vuilder compile Cafe.solpp"
+	},
 	"author": "shan@vite.org",
 	"license": "ISC",
 	"devDependencies": {
@@ -20,8 +24,8 @@
 		"get-stream": "^6.0.1",
 		"mocha": "^9.1.1",
 		"nodemon": "^2.0.4",
-		"ts-node": "^9.0.0",
-		"typescript": "^4.0.2"
+		"ts-node": "10.8.1",
+		"typescript": "4.7.3"
 	},
 	"dependencies": {
 		"@vite/solppc": "^0.8.1-alpha.4",
