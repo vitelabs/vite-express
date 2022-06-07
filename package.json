@@ -27,12 +27,5 @@
 		"ts-node": "10.8.1",
 		"typescript": "4.7.3"
 	},
-	"dependencies": {
-		"@vite/solppc": "^0.8.1-alpha.4",
-		"@vite/vitejs": "^2.3.17",
-		"@vite/vitejs-accountblock": "^2.3.17",
-		"@vite/vitejs-http": "^2.3.17",
-		"@vite/vitejs-ipc": "^2.3.17",
-		"@vite/vitejs-ws": "^2.3.17"
-	}
+	"dependencies": {}
 }
