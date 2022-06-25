@@ -26,11 +26,7 @@ export const toSmallestUnit = (num: string, decimals = 0) => {
 		return num + '0'.repeat(decimals);
 	}
 	const decimalPlaces = num.length - indexOfDot - 1;
-	return (
-		num.substring(num[0] === '0' ? 1 : 0, indexOfDot) +
-		num.substring(indexOfDot + 1) +
-		'0'.repeat(decimals - decimalPlaces)
-	);
+	return (num.substring(indexOfDot + 1) + '0'.repeat(decimals - decimalPlaces)).replace(/^0+/g, '');
 };
 
 export const roundDownTo6Decimals = (balance: string) =>
