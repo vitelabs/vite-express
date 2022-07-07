@@ -62,9 +62,10 @@ export const deepMerge = (target: { [key: string]: any }, source: { [key: string
 
 // https://stackoverflow.com/a/56989122/13442719
 export const connect = <T,>(Component: React.ComponentType<T>) => {
-	return (props: any) => (
+	return (props: Omit<T, keyof State>) => (
 		<GlobalContext.Consumer>
-			{(value: { state: object; setState: setStateType }) => (
+			{(value: HOCProps) => (
+				// @ts-ignore
 				<Component {...props} {...value.state} setState={value.setState} />
 			)}
 		</GlobalContext.Consumer>
