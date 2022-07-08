@@ -1,5 +1,5 @@
 import { LogoutIcon } from '@heroicons/react/outline';
-import { ReactNode, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import DropdownButton from '../components/DropdownButton';
 import Modal from '../components/Modal';
 import QR from '../components/QR';
@@ -9,7 +9,6 @@ import { State } from '../utils/types';
 import { initViteConnect } from '../utils/viteConnect';
 
 type Props = State & {
-	children: ReactNode;
 	className?: string;
 };
 

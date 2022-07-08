@@ -109,7 +109,9 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 			}
 			const toAddress = contract.address[networkType];
 			if (!toAddress) {
-				throw new Error(`${networkType} contract address not found`);
+				const toast = `${networkType} contract address not found`;
+				setState({ toast });
+				throw new Error(toast);
 			}
 			const block = accountBlock.createAccountBlock('callContract', {
 				address: connectedAccount,
@@ -121,7 +123,7 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 			}).accountBlock;
 			return vcInstance.signAndSendTx([{ block }]);
 		},
-		[connectedAccount, networkType, vcInstance]
+		[connectedAccount, networkType, vcInstance, setState]
 	);
 	useEffect(() => {
 		setState({ callContract });

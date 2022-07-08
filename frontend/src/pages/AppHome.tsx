@@ -62,17 +62,23 @@ const AppHome = ({ i18n, vcInstance, callContract, setState }: Props) => {
 				onClick={async () => {
 					if (validateInputs([beneficiaryAddressRef, amountRef])) {
 						promptTxConfirmationSet(true);
-						await callContract(
-							CafeContract,
-							'buyCoffee',
-							[beneficiaryAddress, amount],
-							constant.Vite_TokenId,
-							toSmallestUnit(amount, constant.Vite_Token_Info.decimals)
-						);
-						setState({ toast: i18n.transactionConfirmed });
-						beneficiaryAddressSet('');
-						amountSet('');
-						promptTxConfirmationSet(false);
+						try {
+							const thing = await callContract(
+								CafeContract,
+								'buyCoffee',
+								[beneficiaryAddress, amount],
+								constant.Vite_TokenId,
+								toSmallestUnit(amount, constant.Vite_Token_Info.decimals)
+							);
+							console.log('thing:', thing);
+							setState({ toast: i18n.transactionConfirmed });
+							beneficiaryAddressSet('');
+							amountSet('');
+							promptTxConfirmationSet(false);
+						} catch (error) {
+							promptTxConfirmationSet(false);
+							setState({ toast: JSON.stringify(error) });
+						}
 					}
 				}}
 			>
