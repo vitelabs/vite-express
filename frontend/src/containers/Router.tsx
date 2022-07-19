@@ -67,7 +67,7 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 				})
 				.catch((e) => {
 					console.log(e);
-					setState({ toast: JSON.stringify(e), vcInstance: null });
+					setState({ toast: e, vcInstance: null });
 					localStorage.removeItem(VCSessionKey);
 					// Sometimes on page load, this will catch with
 					// Error: CONNECTION ERROR: Couldn't connect to node wss://buidl.vite.net/gvite/ws.

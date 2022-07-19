@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from '../utils/globalContext';
+import { makeReadable } from '../utils/strings';
 import { State } from '../utils/types';
 
 type Props = State;
@@ -34,7 +35,7 @@ const Toast = ({ setState, toast }: Props) => {
 						}`}
 					>
 						<div className="absolute top-0 left-0 h-full w-1 toast-line-gradient" />
-						<p>{toast}</p>
+						<p>{makeReadable(toast)}</p>
 					</div>
 				</div>,
 				toastParent

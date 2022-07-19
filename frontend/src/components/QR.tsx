@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import QRCode from 'qrcode';
+import { makeReadable } from '../utils/strings';
 
 const QR = React.memo(
 	({
@@ -15,7 +16,7 @@ const QR = React.memo(
 				(url: string) => {
 					srcSet(url);
 				},
-				(e) => window.alert('QR error: ' + JSON.stringify(e))
+				(e) => window.alert('QR error: ' + makeReadable(e))
 			);
 		}, [data]);
 

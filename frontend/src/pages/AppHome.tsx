@@ -1,8 +1,8 @@
 import { constant, wallet } from '@vite/vitejs';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Modal from '../components/Modal';
-import TextInput, { TextInputRefObject } from '../components/TextInput';
+import TextInput, { useTextInputRef } from '../containers/TextInput';
 import CafeContract from '../contracts/Cafe';
 import { connect } from '../utils/globalContext';
 import { useTitle } from '../utils/hooks';
@@ -16,21 +16,18 @@ const AppHome = ({ i18n, vcInstance, callContract, setState }: Props) => {
 	useTitle(i18n.app);
 	const [searchParams] = useSearchParams();
 	const [promptTxConfirmation, promptTxConfirmationSet] = useState(false);
-	const [beneficiaryAddress, beneficiaryAddressSet] = useState(searchParams.get('address') || '');
-	const [amount, amountSet] = useState(searchParams.get('amount') || '');
-	const beneficiaryAddressRef = useRef<TextInputRefObject>();
-	const amountRef = useRef<TextInputRefObject>();
+	const addressRef = useTextInputRef();
+	const amountRef = useTextInputRef();
 
 	return (
 		<div className="space-y-4 max-w-3xl mx-auto">
 			<p className="text-2xl">Buy me a coffee</p>
 			{!vcInstance && <p className="text-xl">{i18n.connectWalletToUseDapp}</p>}
 			<TextInput
-				_ref={beneficiaryAddressRef}
+				_ref={addressRef}
 				disabled={!vcInstance}
 				label={i18n.beneficiaryAddress}
-				value={beneficiaryAddress}
-				onUserInput={(v) => beneficiaryAddressSet(v.trim())}
+				initialValue={searchParams.get('address')}
 				getIssue={(v) => {
 					if (!wallet.isValidAddress(v)) {
 						return i18n.invalidAddress;
@@ -42,9 +39,8 @@ const AppHome = ({ i18n, vcInstance, callContract, setState }: Props) => {
 				_ref={amountRef}
 				disabled={!vcInstance}
 				label={i18n.amount}
-				value={amount}
 				maxDecimals={18}
-				onUserInput={(v) => amountSet(v)}
+				initialValue={searchParams.get('amount')}
 				getIssue={(v) => {
 					if (+v <= 0) {
 						return i18n.amountMustBePositive;
@@ -60,24 +56,24 @@ const AppHome = ({ i18n, vcInstance, callContract, setState }: Props) => {
 				} h-8 px-3 rounded-md font-semibold text-white shadow`}
 				disabled={!vcInstance}
 				onClick={async () => {
-					if (validateInputs([beneficiaryAddressRef, amountRef])) {
+					if (validateInputs([addressRef, amountRef])) {
 						promptTxConfirmationSet(true);
 						try {
 							const thing = await callContract(
 								CafeContract,
 								'buyCoffee',
-								[beneficiaryAddress, amount],
+								[addressRef.value, amountRef.value],
 								constant.Vite_TokenId,
-								toSmallestUnit(amount, constant.Vite_Token_Info.decimals)
+								toSmallestUnit(amountRef.value, constant.Vite_Token_Info.decimals)
 							);
 							console.log('thing:', thing);
 							setState({ toast: i18n.transactionConfirmed });
-							beneficiaryAddressSet('');
-							amountSet('');
+							addressRef.value = '';
+							amountRef.value = '';
 							promptTxConfirmationSet(false);
 						} catch (error) {
 							promptTxConfirmationSet(false);
-							setState({ toast: JSON.stringify(error) });
+							setState({ toast: error });
 						}
 					}
 				}}

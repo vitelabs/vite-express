@@ -16,7 +16,6 @@ const en = {
 	app: 'App',
 	amount: 'Amount',
 	positiveIntegersOnly: 'Positive integers only',
-	test: 'test',
 	testnet: 'Testnet',
 	mainnet: 'Mainnet',
 	localnet: 'Localnet',
@@ -24,6 +23,8 @@ const en = {
 	from: 'From',
 	to: 'To',
 	beneficiaryAddress: 'Beneficiary address',
+	thisFieldCannotBeBlank: 'This field cannot be blank',
+	test: 'test',
 	'': '',
 };
 

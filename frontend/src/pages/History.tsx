@@ -26,7 +26,7 @@ const History = ({ i18n, viteApi, networkType, setState }: Props) => {
 			})
 			.catch((e) => {
 				console.log('e:', e);
-				setState({ toast: JSON.stringify(e) });
+				setState({ toast: e });
 			});
 	}, [viteApi, networkType, setState]);
 

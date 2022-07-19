@@ -22,7 +22,7 @@ export type State = {
 		eventName: string
 	) => Promise<object>;
 	viteApi: ViteAPI;
-	toast: string;
+	toast: any;
 	languageType: string;
 	networkType: NetworkTypes;
 	i18n: typeof en;

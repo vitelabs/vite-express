@@ -1,32 +1,46 @@
 import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline';
-import React, { useRef, useMemo, useState, HTMLProps } from 'react';
+import { HTMLProps, useMemo, useRef, useState } from 'react';
+import { connect } from '../utils/globalContext';
+import { State } from '../utils/types';
 
 export type TextInputRefObject = {
 	tag: HTMLElement | null;
-	issueSet: React.Dispatch<React.SetStateAction<string>>;
+	// errorSet: React.Dispatch<React.SetStateAction<string>>;
 	readonly isValid: boolean;
+	value: string;
+	error: string;
 };
 
-type Props = HTMLProps<HTMLInputElement> & {
-	label: string;
-	value: string;
-	onUserInput: (value: string) => void;
-	containerClassName?: string;
-	inputClassName?: string;
-	textarea?: boolean;
-	numeric?: boolean;
-	password?: boolean;
-	resizable?: boolean;
-	maxDecimals?: number;
-	disabled?: boolean;
-	onMetaEnter?: () => void;
-	placeholder?: string;
-	optional?: boolean;
-	maxLength?: number;
-	type?: string;
-	getIssue?: (value: string) => string | void;
-	_ref?: Function | React.MutableRefObject<TextInputRefObject | undefined>;
+export const useTextInputRef = () => {
+	return useRef<TextInputRefObject>({
+		tag: null,
+		isValid: true,
+		value: '',
+		error: '',
+	}).current;
 };
+
+type Props = State &
+	HTMLProps<HTMLInputElement> & {
+		label: string;
+		_ref?: TextInputRefObject;
+		// _ref?: Function | React.MutableRefObject<TextInputRefObject | undefined>;
+		onUserInput?: (value: string) => void;
+		initialValue?: null | string;
+		containerClassName?: string;
+		inputClassName?: string;
+		textarea?: boolean;
+		numeric?: boolean;
+		password?: boolean;
+		resizable?: boolean;
+		maxDecimals?: number;
+		disabled?: boolean;
+		onMetaEnter?: () => void;
+		placeholder?: string;
+		optional?: boolean;
+		maxLength?: number;
+		getIssue?: (value: string) => string | void;
+	};
 
 const normalizeNumericInput = (str: string, decimals = 6, removeInsignificantZeros = false) => {
 	if (Number.isNaN(+str) || !str) {
@@ -43,16 +57,17 @@ const normalizeNumericInput = (str: string, decimals = 6, removeInsignificantZer
 };
 
 const TextInput = ({
+	i18n,
 	containerClassName,
 	inputClassName,
 	textarea,
 	numeric,
 	password,
+	initialValue,
 	resizable,
 	maxDecimals,
 	disabled,
 	label,
-	value = '',
 	placeholder = '',
 	onUserInput,
 	optional,
@@ -61,7 +76,8 @@ const TextInput = ({
 	_ref,
 }: Props) => {
 	const input = useRef<HTMLInputElement | HTMLTextAreaElement | null>();
-	const [issue, issueSet] = useState('');
+	const [internalValue, internalValueSet] = useState(initialValue || '');
+	const [error, errorSet] = useState('');
 	const [focused, focusedSet] = useState(false);
 	const [visible, visibleSet] = useState(false);
 	const id = useMemo(() => label.toLowerCase().replace(/\s+/g, '-'), [label]);
@@ -73,7 +89,7 @@ const TextInput = ({
 				htmlFor={id}
 				onMouseDown={() => setTimeout(() => input.current!.focus(), 0)}
 				className={`absolute transition-all pt-0.5 w-[calc(100%-1.2rem)] duration-200 ${
-					focused || value
+					focused || internalValue
 						? 'bg-skin-middleground top-0.5 left-2 font-bold text-xs'
 						: 'top-2.5 left-2.5'
 				} ${focused ? 'text-skin-highlight' : 'text-skin-muted'}`}
@@ -92,7 +108,7 @@ const TextInput = ({
 						visibleSet(!visible);
 						setTimeout(() => {
 							// move cursor to end
-							input.current!.setSelectionRange(value.length, value.length);
+							input.current!.setSelectionRange(internalValue.length, internalValue.length);
 						}, 0);
 					}}
 				>
@@ -102,7 +118,7 @@ const TextInput = ({
 			<Tag
 				id={id}
 				placeholder={placeholder}
-				value={value}
+				value={internalValue}
 				disabled={disabled}
 				autoComplete="off"
 				className={`px-2 pt-4 w-full text-lg block bg-skin-middleground transition duration-200 border-2 rounded ${
@@ -110,7 +126,7 @@ const TextInput = ({
 				} ${
 					focused
 						? 'border-skin-highlight shadow-md'
-						: 'shadow ' + (issue ? 'border-red-400' : 'border-skin-alt')
+						: 'shadow ' + (error ? 'border-red-400' : 'border-skin-alt')
 				} ${resizable ? 'resize-y' : 'resize-none'} ${inputClassName}`}
 				{...(numeric
 					? {
@@ -121,14 +137,15 @@ const TextInput = ({
 					: { type: password && !visible ? 'password' : 'text' })}
 				onFocus={() => {
 					focusedSet(true);
-					issueSet('');
+					errorSet('');
 				}}
 				onBlur={({ target: { value } }) => {
 					focusedSet(false);
-					if (numeric) {
+					if (numeric && onUserInput) {
 						value = normalizeNumericInput(value, maxDecimals, true);
 						onUserInput(value);
 					}
+					internalValueSet(value);
 				}}
 				onChange={({ target: { value } }) => {
 					// e.stopPropagation();
@@ -136,49 +153,55 @@ const TextInput = ({
 					if (disabled) {
 						return;
 					}
-					issue && issueSet('');
+					error && errorSet('');
 					if (numeric && value) {
 						// eslint-disable-next-line
 						value = value.replace(/[^0123456789\.]/g, '');
 						// value = value.replace(/\.+/g, '.');
 						value = normalizeNumericInput(value, maxDecimals);
 					}
-					onUserInput(maxLength ? value.slice(0, maxLength) : value);
+					value = maxLength ? value.slice(0, maxLength) : value;
+					if (onUserInput) {
+						onUserInput(value);
+					}
+					internalValueSet(value);
 				}}
 				ref={(tag: HTMLInputElement | HTMLTextAreaElement | null) => {
 					input.current = tag;
 					if (_ref) {
-						const refObject = {
-							tag,
-							issueSet,
-							get isValid() {
-								const trimmedValue = value.trim();
+						_ref.tag = tag;
+						Object.defineProperty(_ref, 'error', {
+							get: () => error,
+							set: (v) => errorSet(v),
+						});
+						Object.defineProperty(_ref, 'value', {
+							get: () => internalValue,
+							set: (v) => internalValueSet(v),
+						});
+						Object.defineProperty(_ref, 'isValid', {
+							get() {
+								const trimmedValue = internalValue.trim();
 								if (!optional && !trimmedValue) {
-									issueSet(`This field cannot be blank`);
+									errorSet(i18n.thisFieldCannotBeBlank);
 									return false;
 								} else if (trimmedValue && getIssue) {
 									const newIssue = getIssue(trimmedValue) || '';
 									// if (typeof newIssue === 'object') {
-									// 	newIssue.then((newIssue) => issueSet(newIssue));
+									// 	newIssue.then((newIssue) => errorSet(newIssue));
 									// 	return newIssue;
 									// }
-									issueSet(newIssue);
+									errorSet(newIssue);
 									return !newIssue;
 								}
 								return true;
 							},
-						};
-						if (typeof _ref === 'function') {
-							_ref(refObject);
-						} else {
-							_ref.current = refObject;
-						}
+						});
 					}
 				}}
 			/>
-			{issue && <p className="mt-1 text-sm leading-3 font-bold text-red-500">{issue}</p>}
+			{error && <p className="mt-1 text-sm leading-3 font-bold text-red-500">{error}</p>}
 		</div>
 	);
 };
 
-export default TextInput;
+export default connect(TextInput);

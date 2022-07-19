@@ -72,3 +72,6 @@ export const formatDate = (date: number | Date, verbose?: boolean, utc?: boolean
 	}
 	return `${year}-${month + 1}-${day} ${hour}:${minute}:${second}`;
 };
+
+export const makeReadable = (err: any) =>
+	err.toString() === '[object Object]' ? JSON.stringify(err) : err.toString();
