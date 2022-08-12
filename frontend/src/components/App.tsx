@@ -13,10 +13,14 @@ const App = () => {
 	useEffect(() => {
 		(async () => {
 			const vcSession = getValidVCSession();
-			const state: Pick<State, 'networkType' | 'languageType' | 'vcInstance'> = {
+			const vcInstance = vcSession ? initViteConnect(vcSession) : undefined;
+			let vpAddress = window.vitePassport && (await window.vitePassport.getConnectedAddress());
+			const state: Partial<State> = {
+				vcInstance,
+				vpAddress,
 				networkType: localStorage.networkType || 'testnet',
 				languageType: localStorage.languageType || 'en',
-				vcInstance: vcSession ? initViteConnect(vcSession) : null,
+				activeAddress: vpAddress || vcInstance?.accounts?.[0],
 			};
 			initialStateSet(state);
 		})();

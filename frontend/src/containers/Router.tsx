@@ -12,6 +12,7 @@ import { PROD } from '../utils/constants';
 import PageContainer from './PageContainer';
 import CafeContract from '../contracts/Cafe';
 import History from '../pages/History';
+import { copyToClipboardAsync } from '../utils/strings';
 
 const providerWsURLs = {
 	...(PROD ? {} : { localnet: 'ws://localhost:23457' }),
@@ -23,8 +24,13 @@ const providerOptions = { retryTimes: 10, retryInterval: 5000 };
 
 type Props = State;
 
-const Router = ({ setState, vcInstance, networkType }: Props) => {
-	const connectedAccount = useMemo(() => vcInstance?.accounts[0], [vcInstance]);
+const Router = ({ i18n, setState, vpAddress, vcInstance, networkType }: Props) => {
+	const activeAddress = useMemo(() => {
+		return vpAddress || vcInstance?.accounts[0];
+	}, [vpAddress, vcInstance]);
+	useEffect(() => {
+		setState({ activeAddress });
+	}, [setState, activeAddress]);
 
 	const rpc = useMemo(
 		() =>
@@ -67,7 +73,7 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 				})
 				.catch((e) => {
 					console.log(e);
-					setState({ toast: e, vcInstance: null });
+					setState({ toast: e, vcInstance: undefined });
 					localStorage.removeItem(VCSessionKey);
 					// Sometimes on page load, this will catch with
 					// Error: CONNECTION ERROR: Couldn't connect to node wss://buidl.vite.net/gvite/ws.
@@ -76,6 +82,19 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 	}, [setState, getBalanceInfo, vcInstance]);
 
 	useEffect(updateViteBalanceInfo, [updateViteBalanceInfo]);
+
+	// useEffect(() => {
+	// 	if (window.vitePassport) {
+	// 		window.vitePassport
+	// 			.getConnectedAddress()
+	// 			.then((data) => {
+	// 				console.log('data', data);
+	// 			})
+	// 			.catch((err) => {
+	// 				console.log('err', err);
+	// 			});
+	// 	}
+	// }, []);
 
 	useEffect(() => {
 		if (vcInstance) {
@@ -91,14 +110,14 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 	}, [setState, subscribe, vcInstance, viteApi, updateViteBalanceInfo]);
 
 	const callContract = useCallback(
-		(
+		async (
 			contract: typeof CafeContract,
 			methodName: string,
 			params: any[] = [],
 			tokenId?: string,
 			amount?: string
 		) => {
-			if (!vcInstance) {
+			if (!activeAddress) {
 				return;
 			}
 			const methodAbi = contract.abi.find(
@@ -113,21 +132,40 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 				setState({ toast });
 				throw new Error(toast);
 			}
-			const block = accountBlock.createAccountBlock('callContract', {
-				address: connectedAccount,
+			const blockParams = {
+				address: activeAddress,
 				abi: methodAbi,
 				toAddress,
 				params,
 				tokenId,
 				amount,
-			}).accountBlock;
-			return vcInstance.signAndSendTx([{ block }]);
+			};
+			if (vpAddress === activeAddress) {
+				return window.vitePassport.writeAccountBlock('callContract', blockParams);
+			} else if (vcInstance) {
+				return vcInstance.signAndSendTx([
+					{ block: accountBlock.createAccountBlock('callContract', blockParams).accountBlock },
+				]);
+			}
 		},
-		[connectedAccount, networkType, vcInstance, setState]
+		[activeAddress, networkType, vcInstance, setState, vpAddress]
 	);
+
 	useEffect(() => {
 		setState({ callContract });
 	}, [setState, callContract]);
+
+	useEffect(() => {
+		setState({
+			copyWithToast: (text = '') => {
+				if (copyToClipboardAsync(text)) {
+					setState({ toast: i18n.successfullyCopied });
+				} else {
+					setState({ toast: 'clipboard API not supported' });
+				}
+			},
+		});
+	}, [setState, i18n]);
 
 	return (
 		<BrowserRouter>

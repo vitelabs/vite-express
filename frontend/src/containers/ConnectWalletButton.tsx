@@ -12,24 +12,41 @@ type Props = State & {
 	className?: string;
 };
 
-const ViteConnectButton = ({ setState, i18n, vcInstance }: Props) => {
+const ConnectWalletButton = ({ setState, i18n, activeAddress, vcInstance, vpAddress }: Props) => {
 	const [connectURI, connectURISet] = useState('');
 
 	useEffect(() => {
 		if (vcInstance) {
-			vcInstance.on('disconnect', () => setState({ vcInstance: null }));
+			vcInstance.on('disconnect', () => setState({ vcInstance: undefined }));
 		}
 	}, [setState, vcInstance]);
 
-	return vcInstance ? (
+	useEffect(() => {
+		let unsubscribe = () => {};
+		if (window.vitePassport) {
+			unsubscribe = window.vitePassport.on('accountChange', (payload) => {
+				setState({ vpAddress: payload?.activeAddress });
+			});
+		}
+		return unsubscribe;
+	}, [setState]);
+
+	return activeAddress ? (
 		<DropdownButton
-			buttonJsx={<p>{shortenAddress(vcInstance.accounts[0])}</p>}
+			buttonJsx={<p>{shortenAddress(activeAddress)}</p>}
 			dropdownJsx={
 				<div className="fx px-2 py-0.5 h-7 gap-2">
 					<LogoutIcon className="h-full text-skin-muted" />
 					<button
 						className="font-semibold"
-						onClick={() => vcInstance!.killSession()}
+						onClick={() => {
+							if (vpAddress) {
+								setState({ vpAddress: undefined });
+								window.vitePassport.disconnectWallet();
+							} else {
+								vcInstance!.killSession();
+							}
+						}}
 						onMouseDown={(e) => e.preventDefault()}
 					>
 						{i18n.logOut}
@@ -58,10 +75,31 @@ const ViteConnectButton = ({ setState, i18n, vcInstance }: Props) => {
 					<div className="xy">
 						<QR data={connectURI} />
 					</div>
+					<p className="text-center text-lg my-3 font-semibold">{i18n.or}</p>
+					<button
+						className="bg-skin-medlight h-8 w-full rounded-md brightness-button font-semibold text-white shadow"
+						onClick={async () => {
+							if (window.vitePassport) {
+								try {
+									await window.vitePassport.connectWallet();
+								} catch (error) {
+									setState({ toast: error });
+								}
+								console.log('test', await window.vitePassport.getConnectedAddress());
+								setState({
+									vpAddress: await window.vitePassport.getConnectedAddress(),
+								});
+							} else {
+								setState({ toast: i18n.vitePassportNotDetected });
+							}
+						}}
+					>
+						{i18n.connectWithVitePassport}
+					</button>
 				</Modal>
 			)}
 		</>
 	);
 };
 
-export default connect(ViteConnectButton);
+export default connect(ConnectWalletButton);

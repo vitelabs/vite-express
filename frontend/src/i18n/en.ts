@@ -3,6 +3,7 @@ const en = {
 	launchApp: 'Launch App',
 	scanWithYourViteWalletApp: 'Scan with your Vite Wallet app',
 	confirmTransactionOnYourViteWalletApp: 'Confirm transaction on your Vite Wallet app',
+	confirmTransactionOnVitePassport: 'Confirm transaction on Vite Passport',
 	transactionConfirmed: 'Transaction confirmed',
 	light: 'light',
 	dark: 'dark',
@@ -24,6 +25,12 @@ const en = {
 	to: 'To',
 	beneficiaryAddress: 'Beneficiary address',
 	thisFieldCannotBeBlank: 'This field cannot be blank',
+	or: 'or',
+	connectWithVitePassport: 'Connect with Vite Passport',
+	vitePassportNotDetected: 'Vite Passport not detected',
+	viteExpressNetworkDoesNotMatchDappNetworkUrl:
+		'Vite Express network does not match dapp network URL',
+	successfullyCopied: 'Successfully copied',
 	test: 'test',
 	'': '',
 };

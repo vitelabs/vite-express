@@ -75,3 +75,11 @@ export const formatDate = (date: number | Date, verbose?: boolean, utc?: boolean
 
 export const makeReadable = (err: any) =>
 	err.toString() === '[object Object]' ? JSON.stringify(err) : err.toString();
+
+// https://howchoo.com/javascript/how-to-turn-an-object-into-query-string-parameters-in-javascript
+export const toQueryString = (params: { [key: string]: any }) =>
+	'?' +
+	Object.keys(params)
+		.filter((key) => !!params[key])
+		.map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(params[key]))
+		.join('&');

@@ -4,7 +4,26 @@ import en from '../i18n/en';
 import { setStateType } from './globalContext';
 import { VC } from './viteConnect';
 
-export type NetworkTypes = 'testnet' | 'mainnet' | 'localnet';
+export type NetworkType = 'testnet' | 'mainnet' | 'localnet';
+
+type injectedScriptEvents = 'accountChange' | 'networkChange';
+type VitePassport = {
+	getConnectedAddress: () => Promise<undefined | string>;
+	connectWallet: () => Promise<undefined>;
+	disconnectWallet: () => Promise<undefined>;
+	getNetwork: () => Promise<string>;
+	writeAccountBlock: (type: string, params: object) => Promise<undefined>;
+	on: (
+		event: injectedScriptEvents,
+		callback: (payload: { activeAddress?: string; activeNetwork: string }) => void
+	) => () => void;
+};
+declare global {
+	interface Window {
+		vitePassport: VitePassport;
+	}
+}
+// window.vitePassport = window.vitePassport || {};
 
 export type State = {
 	setState: setStateType;
@@ -24,11 +43,13 @@ export type State = {
 	viteApi: ViteAPI;
 	toast: any;
 	languageType: string;
-	networkType: NetworkTypes;
+	networkType: NetworkType;
 	i18n: typeof en;
-	vcInstance: VC | null;
-	metamaskAddress: string;
+	vcInstance?: VC;
+	vpAddress?: string;
+	activeAddress?: string;
 	viteBalanceInfo: ViteBalanceInfo;
+	copyWithToast: (text: string) => void;
 };
 
 export type ViteBalanceInfo = {

@@ -95,7 +95,6 @@ const TextInput = ({
 				} ${focused ? 'text-skin-highlight' : 'text-skin-muted'}`}
 			>
 				{label}
-				{/* {optional && ' - optional'} */}
 				{optional && ' (?)'}
 			</label>
 			{password && (

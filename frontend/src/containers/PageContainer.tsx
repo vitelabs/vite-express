@@ -1,10 +1,10 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { TranslateIcon, SunIcon, MoonIcon, DesktopComputerIcon } from '@heroicons/react/outline';
 import A from '../components/A';
-import { NetworkTypes, State } from '../utils/types';
+import { NetworkType, State } from '../utils/types';
 import { prefersDarkTheme } from '../utils/misc';
 import { connect } from '../utils/globalContext';
-import ViteConnectButton from './ViteConnectButton';
+import ConnectWalletButton from './ConnectWalletButton';
 import ViteLogo from '../assets/ViteLogo';
 import { PROD } from '../utils/constants';
 import DropdownButton from '../components/DropdownButton';
@@ -14,6 +14,12 @@ type Props = State & {
 	children: ReactNode;
 };
 
+const networks: { [key: string]: NetworkType } = {
+	'wss://node.vite.net/gvite/ws': 'mainnet',
+	'wss://buidl.vite.net/gvite/ws': 'testnet',
+	'ws://localhost:23457': 'localnet',
+};
+
 const PageContainer = ({
 	noPadding,
 	networkType,
@@ -21,6 +27,8 @@ const PageContainer = ({
 	i18n,
 	setState,
 	children,
+	vpAddress,
+	activeAddress,
 }: Props) => {
 	const [theme, themeSet] = useState(localStorage.theme);
 
@@ -31,13 +39,25 @@ const PageContainer = ({
 	}, [setState, languageType]);
 
 	const networkTypes = useMemo(() => {
-		const arr: [NetworkTypes, string][] = [
+		const arr: [NetworkType, string][] = [
 			['mainnet', i18n?.mainnet],
 			['testnet', i18n?.testnet],
 		];
 		!PROD && arr.push(['localnet', i18n?.localnet]);
 		return arr;
 	}, [i18n]);
+
+	useEffect(() => {
+		(async () => {
+			if (window.vitePassport && (await window.vitePassport.getConnectedAddress())) {
+				const networkUrl = await window.vitePassport.getNetwork();
+				const networkType = networks[networkUrl];
+				if (networkType) {
+					setState({ networkType });
+				}
+			}
+		})();
+	}, []); // eslint-disable-line
 
 	const languages = [
 		['English', 'en'],
@@ -49,6 +69,21 @@ const PageContainer = ({
 		[MoonIcon, i18n?.dark],
 		[DesktopComputerIcon, i18n?.system],
 	];
+
+	useEffect(() => {
+		let unsubscribe = () => {};
+		if (vpAddress && vpAddress === activeAddress) {
+			unsubscribe = window.vitePassport.on('networkChange', (payload) => {
+				const networkType = networks[payload.activeNetwork] as NetworkType;
+				if (networkType) {
+					setState({ networkType });
+				} else {
+					setState({ toast: i18n.viteExpressNetworkDoesNotMatchDappNetworkUrl });
+				}
+			});
+		}
+		return unsubscribe;
+	}, [setState, vpAddress, activeAddress, i18n]);
 
 	return !i18n ? null : (
 		<div className="h-0 min-h-screen relative flex flex-col">
@@ -90,7 +125,7 @@ const PageContainer = ({
 							</>
 						}
 					/>
-					<ViteConnectButton />
+					<ConnectWalletButton />
 					<DropdownButton
 						buttonJsx={
 							<div className="w-8 h-8 xy">
