@@ -17,7 +17,7 @@ const History = ({ i18n, viteApi, networkType, setState }: Props) => {
 		eventsSet(undefined);
 		const contractAddress = Cafe.address[networkType];
 		getPastEvents(viteApi, contractAddress, Cafe.abi, 'Buy', {
-			fromHeight: 0,
+			fromHeight: 1,
 			toHeight: 0,
 		})
 			.then((events) => {
