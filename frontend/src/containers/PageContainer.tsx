@@ -1,12 +1,12 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { TranslateIcon, SunIcon, MoonIcon, DesktopComputerIcon } from '@heroicons/react/outline';
 import A from '../components/A';
-import { NetworkType, State } from '../utils/types';
+import { State } from '../utils/types';
 import { prefersDarkTheme } from '../utils/misc';
 import { connect } from '../utils/globalContext';
 import ConnectWalletButton from './ConnectWalletButton';
 import ViteLogo from '../assets/ViteLogo';
-import { PROD } from '../utils/constants';
+import { networkList, PROD } from '../utils/constants';
 import DropdownButton from '../components/DropdownButton';
 
 type Props = State & {
@@ -14,15 +14,9 @@ type Props = State & {
 	children: ReactNode;
 };
 
-const networks: { [key: string]: NetworkType } = {
-	'wss://node.vite.net/gvite/ws': 'mainnet',
-	'wss://buidl.vite.net/gvite/ws': 'testnet',
-	'ws://localhost:23457': 'localnet',
-};
-
 const PageContainer = ({
 	noPadding,
-	networkType,
+	activeNetworkIndex,
 	languageType,
 	i18n,
 	setState,
@@ -38,26 +32,20 @@ const PageContainer = ({
 		});
 	}, [setState, languageType]);
 
-	const networkTypes = useMemo(() => {
-		const arr: [NetworkType, string][] = [
-			['mainnet', i18n?.mainnet],
-			['testnet', i18n?.testnet],
-		];
-		!PROD && arr.push(['localnet', i18n?.localnet]);
-		return arr;
-	}, [i18n]);
-
 	useEffect(() => {
 		(async () => {
-			if (window.vitePassport && (await window.vitePassport.getConnectedAddress())) {
-				const networkUrl = await window.vitePassport.getNetwork();
-				const networkType = networks[networkUrl];
-				if (networkType) {
-					setState({ networkType });
+			if (i18n && window?.vitePassport) {
+				if (!(await window.vitePassport.getConnectedAddress())) return;
+				const activeNetwork = await window.vitePassport.getNetwork();
+				let i = networkList.findIndex((n) => n.rpcUrl === activeNetwork.rpcUrl);
+				if (i === -1) {
+					setState({ toast: i18n.viteExpressNetworkDoesNotMatchDappNetworkUrl });
+					i = 0;
 				}
+				setState({ activeNetworkIndex: i });
 			}
 		})();
-	}, []); // eslint-disable-line
+	}, [i18n]); // eslint-disable-line
 
 	const languages = [
 		['English', 'en'],
@@ -72,14 +60,14 @@ const PageContainer = ({
 
 	useEffect(() => {
 		let unsubscribe = () => {};
-		if (vpAddress && vpAddress === activeAddress) {
+		if (vpAddress && vpAddress === activeAddress && window?.vitePassport?.on) {
 			unsubscribe = window.vitePassport.on('networkChange', (payload) => {
-				const networkType = networks[payload.activeNetwork] as NetworkType;
-				if (networkType) {
-					setState({ networkType });
-				} else {
+				let i = networkList.findIndex((n) => n.rpcUrl === payload.activeNetwork.rpcUrl);
+				if (i === -1) {
 					setState({ toast: i18n.viteExpressNetworkDoesNotMatchDappNetworkUrl });
+					i = 0;
 				}
+				setState({ activeNetworkIndex: i });
 			});
 		}
 		return unsubscribe;
@@ -101,24 +89,25 @@ const PageContainer = ({
 				</div>
 				<div className="fx gap-3 relative">
 					<DropdownButton
-						buttonJsx={<p className="text-skin-secondary">{i18n[networkType]}</p>}
+						buttonJsx={
+							<p className="text-skin-secondary">{networkList[activeNetworkIndex].name}</p>
+						}
 						dropdownJsx={
 							<>
-								{networkTypes.map(([networkType, label]) => {
-									const active = (localStorage.networkType || 'testnet') === networkType;
+								{networkList.map((network, i) => {
 									return (
 										<button
-											key={networkType}
+											key={network.rpcUrl}
 											className={`fx font-semibold px-2 w-full h-7 bg-skin-foreground brightness-button ${
-												active ? 'text-skin-highlight' : ''
+												activeNetworkIndex === i ? 'text-skin-highlight' : ''
 											}`}
 											onMouseDown={(e) => e.preventDefault()}
 											onClick={() => {
-												localStorage.networkType = networkType;
-												setState({ networkType });
+												localStorage.activeNetworkIndex = i;
+												setState({ activeNetworkIndex: i });
 											}}
 										>
-											{label}
+											{network.name}
 										</button>
 									);
 								})}

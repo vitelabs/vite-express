@@ -1,6 +1,7 @@
 import { RefreshIcon } from '@heroicons/react/outline';
 import { useCallback, useEffect, useState } from 'react';
 import Cafe from '../contracts/Cafe';
+import { networkList } from '../utils/constants';
 import { connect } from '../utils/globalContext';
 import { useTitle } from '../utils/hooks';
 import { shortenAddress } from '../utils/strings';
@@ -9,26 +10,33 @@ import { getPastEvents } from '../utils/viteScripts';
 
 type Props = State & {};
 
-const History = ({ i18n, viteApi, networkType, setState }: Props) => {
+const History = ({ i18n, viteApi, activeNetworkIndex, setState }: Props) => {
 	useTitle(i18n.history);
 	const [events, eventsSet] = useState<CoffeeBuyEvent[]>();
 
 	const updateEvents = useCallback(() => {
 		eventsSet(undefined);
-		const contractAddress = Cafe.address[networkType];
+		const network = networkList[activeNetworkIndex];
+		if (!network) {
+			return setState({ toast: i18n.unsupportedNetwork });
+		}
+		// @ts-ignore
+		const contractAddress = Cafe.address[network.name.toLowerCase()];
+		if (!contractAddress) return;
+
 		getPastEvents(viteApi, contractAddress, Cafe.abi, 'Buy', {
 			fromHeight: 1,
 			toHeight: 0,
 		})
 			.then((events) => {
 				// console.log('events:', events);
-				eventsSet(events);
+				eventsSet(events.reverse());
 			})
 			.catch((e) => {
 				console.log('e:', e);
 				setState({ toast: e });
 			});
-	}, [viteApi, networkType, setState]);
+	}, [viteApi, activeNetworkIndex, setState, i18n]);
 
 	useEffect(() => {
 		updateEvents();

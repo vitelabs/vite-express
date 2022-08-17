@@ -8,23 +8,18 @@ import { connect } from '../utils/globalContext';
 import { State, ViteBalanceInfo } from '../utils/types';
 import Toast from './Toast';
 import { VCSessionKey } from '../utils/viteConnect';
-import { PROD } from '../utils/constants';
+import { networkList, PROD } from '../utils/constants';
 import PageContainer from './PageContainer';
 import CafeContract from '../contracts/Cafe';
 import History from '../pages/History';
 import { copyToClipboardAsync } from '../utils/strings';
 
-const providerWsURLs = {
-	...(PROD ? {} : { localnet: 'ws://localhost:23457' }),
-	testnet: 'wss://buidl.vite.net/gvite/ws',
-	mainnet: 'wss://node.vite.net/gvite/ws', // or 'wss://node-tokyo.vite.net/ws'
-};
 const providerTimeout = 60000;
 const providerOptions = { retryTimes: 10, retryInterval: 5000 };
 
 type Props = State;
 
-const Router = ({ i18n, setState, vpAddress, vcInstance, networkType }: Props) => {
+const Router = ({ i18n, setState, vpAddress, vcInstance, activeNetworkIndex }: Props) => {
 	const activeAddress = useMemo(() => {
 		return vpAddress || vcInstance?.accounts[0];
 	}, [vpAddress, vcInstance]);
@@ -32,15 +27,12 @@ const Router = ({ i18n, setState, vpAddress, vcInstance, networkType }: Props) =
 		setState({ activeAddress });
 	}, [setState, activeAddress]);
 
-	const rpc = useMemo(
-		() =>
-			new WS_RPC(
-				networkType === 'mainnet' ? providerWsURLs.mainnet : providerWsURLs.testnet,
-				providerTimeout,
-				providerOptions
-			),
-		[networkType]
-	);
+	const rpc = useMemo(() => {
+		const rpcUrl = networkList[activeNetworkIndex]?.rpcUrl;
+		if (rpcUrl) {
+			return new WS_RPC(rpcUrl, providerTimeout, providerOptions);
+		}
+	}, [activeNetworkIndex]);
 
 	const viteApi = useMemo(() => {
 		return new ViteAPI(rpc, () => {
@@ -126,11 +118,14 @@ const Router = ({ i18n, setState, vpAddress, vcInstance, networkType }: Props) =
 			if (!methodAbi) {
 				throw new Error(`method not found: ${methodName}`);
 			}
-			const toAddress = contract.address[networkType];
+			const network = networkList[activeNetworkIndex];
+			if (!network) {
+				throw new Error(i18n.unsupportedNetwork);
+			}
+			// @ts-ignore
+			const toAddress = contract.address[network.name.toLowerCase()];
 			if (!toAddress) {
-				const toast = `${networkType} contract address not found`;
-				setState({ toast });
-				throw new Error(toast);
+				throw new Error(i18n.unsupportedNetwork);
 			}
 			const blockParams = {
 				address: activeAddress,
@@ -140,7 +135,7 @@ const Router = ({ i18n, setState, vpAddress, vcInstance, networkType }: Props) =
 				tokenId,
 				amount,
 			};
-			if (vpAddress === activeAddress) {
+			if (vpAddress === activeAddress && window?.vitePassport?.writeAccountBlock) {
 				return window.vitePassport.writeAccountBlock('callContract', blockParams);
 			} else if (vcInstance) {
 				return vcInstance.signAndSendTx([
@@ -148,7 +143,7 @@ const Router = ({ i18n, setState, vpAddress, vcInstance, networkType }: Props) =
 				]);
 			}
 		},
-		[activeAddress, networkType, vcInstance, setState, vpAddress]
+		[activeAddress, activeNetworkIndex, vcInstance, vpAddress, i18n]
 	);
 
 	useEffect(() => {

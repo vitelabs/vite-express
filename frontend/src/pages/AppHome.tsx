@@ -69,7 +69,7 @@ const AppHome = ({
 								const thing = await callContract(
 									CafeContract,
 									'buyCoffee',
-									[addressRef.value, amountRef.value],
+									[addressRef.value.trim(), amountRef.value.trim()],
 									constant.Vite_TokenId,
 									toSmallestUnit(amountRef.value, constant.Vite_Token_Info.decimals)
 								);

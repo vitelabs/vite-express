@@ -14,11 +14,19 @@ const App = () => {
 		(async () => {
 			const vcSession = getValidVCSession();
 			const vcInstance = vcSession ? initViteConnect(vcSession) : undefined;
-			let vpAddress = window.vitePassport && (await window.vitePassport.getConnectedAddress());
+			let vpAddress: undefined | string;
+			try {
+				if (window?.vitePassport?.getConnectedAddress) {
+					vpAddress = await window.vitePassport.getConnectedAddress();
+				}
+			} catch (error) {
+				console.log('error:', error);
+			}
+			// console.log('vpAddress:', vpAddress);
 			const state: Partial<State> = {
 				vcInstance,
 				vpAddress,
-				networkType: localStorage.networkType || 'testnet',
+				activeNetworkIndex: 0,
 				languageType: localStorage.languageType || 'en',
 				activeAddress: vpAddress || vcInstance?.accounts?.[0],
 			};

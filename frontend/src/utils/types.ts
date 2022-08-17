@@ -1,29 +1,32 @@
+import { AccountBlockBlock } from '@vite/vitejs/distSrc/utils/type';
 import { ViteAPI } from '@vite/vitejs/distSrc/viteAPI/type';
 import CafeContract from '../contracts/Cafe';
 import en from '../i18n/en';
 import { setStateType } from './globalContext';
 import { VC } from './viteConnect';
 
-export type NetworkType = 'testnet' | 'mainnet' | 'localnet';
-
+type Network = {
+	name: string;
+	rpcUrl: string;
+	explorerUrl?: string;
+};
 type injectedScriptEvents = 'accountChange' | 'networkChange';
 type VitePassport = {
 	getConnectedAddress: () => Promise<undefined | string>;
-	connectWallet: () => Promise<undefined>;
 	disconnectWallet: () => Promise<undefined>;
-	getNetwork: () => Promise<string>;
-	writeAccountBlock: (type: string, params: object) => Promise<undefined>;
+	getNetwork: () => Promise<Network>;
+	connectWallet: () => Promise<{ domain: string }>;
+	writeAccountBlock: (type: string, params: object) => Promise<AccountBlockBlock>;
 	on: (
 		event: injectedScriptEvents,
-		callback: (payload: { activeAddress?: string; activeNetwork: string }) => void
+		callback: (payload: { activeAddress?: string; activeNetwork: Network }) => void
 	) => () => void;
 };
 declare global {
 	interface Window {
-		vitePassport: VitePassport;
+		vitePassport?: VitePassport;
 	}
 }
-// window.vitePassport = window.vitePassport || {};
 
 export type State = {
 	setState: setStateType;
@@ -43,7 +46,7 @@ export type State = {
 	viteApi: ViteAPI;
 	toast: any;
 	languageType: string;
-	networkType: NetworkType;
+	activeNetworkIndex: number;
 	i18n: typeof en;
 	vcInstance?: VC;
 	vpAddress?: string;

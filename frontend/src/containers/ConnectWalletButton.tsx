@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import DropdownButton from '../components/DropdownButton';
 import Modal from '../components/Modal';
 import QR from '../components/QR';
+import { networkList } from '../utils/constants';
 import { connect } from '../utils/globalContext';
 import { shortenAddress } from '../utils/strings';
 import { State } from '../utils/types';
@@ -23,35 +24,39 @@ const ConnectWalletButton = ({ setState, i18n, activeAddress, vcInstance, vpAddr
 
 	useEffect(() => {
 		let unsubscribe = () => {};
-		if (window.vitePassport) {
+		if (window?.vitePassport?.on) {
 			unsubscribe = window.vitePassport.on('accountChange', (payload) => {
-				setState({ vpAddress: payload?.activeAddress });
+				setState({ vpAddress: payload.activeAddress });
 			});
 		}
 		return unsubscribe;
 	}, [setState]);
 
+	useEffect(() => {
+		if (activeAddress) {
+			connectURISet('');
+		}
+	}, [activeAddress]);
+
 	return activeAddress ? (
 		<DropdownButton
 			buttonJsx={<p>{shortenAddress(activeAddress)}</p>}
 			dropdownJsx={
-				<div className="fx px-2 py-0.5 h-7 gap-2">
+				<button
+					className="fx px-2 py-0.5 h-7 gap-2"
+					onClick={() => {
+						if (vpAddress && window?.vitePassport?.disconnectWallet) {
+							setState({ vpAddress: undefined });
+							window.vitePassport.disconnectWallet();
+						} else {
+							vcInstance!.killSession();
+						}
+					}}
+					onMouseDown={(e) => e.preventDefault()}
+				>
 					<LogoutIcon className="h-full text-skin-muted" />
-					<button
-						className="font-semibold"
-						onClick={() => {
-							if (vpAddress) {
-								setState({ vpAddress: undefined });
-								window.vitePassport.disconnectWallet();
-							} else {
-								vcInstance!.killSession();
-							}
-						}}
-						onMouseDown={(e) => e.preventDefault()}
-					>
-						{i18n.logOut}
-					</button>
-				</div>
+					<p className="font-semibold">{i18n.logOut}</p>
+				</button>
 			}
 		/>
 	) : (
@@ -61,10 +66,7 @@ const ConnectWalletButton = ({ setState, i18n, activeAddress, vcInstance, vpAddr
 				onClick={async () => {
 					vcInstance = initViteConnect();
 					connectURISet(await vcInstance.createSession());
-					vcInstance.on('connect', () => {
-						connectURISet('');
-						setState({ vcInstance });
-					});
+					vcInstance.on('connect', () => setState({ vcInstance }));
 				}}
 			>
 				<p>{i18n.connectWallet}</p>
@@ -79,16 +81,19 @@ const ConnectWalletButton = ({ setState, i18n, activeAddress, vcInstance, vpAddr
 					<button
 						className="bg-skin-medlight h-8 w-full rounded-md brightness-button font-semibold text-white shadow"
 						onClick={async () => {
-							if (window.vitePassport) {
+							if (window?.vitePassport) {
 								try {
 									await window.vitePassport.connectWallet();
+									const activeNetwork = await window.vitePassport.getNetwork();
+									setState({
+										vpAddress: await window.vitePassport.getConnectedAddress(),
+										activeNetworkIndex: networkList.findIndex(
+											(n) => n.rpcUrl === activeNetwork.rpcUrl
+										),
+									});
 								} catch (error) {
 									setState({ toast: error });
 								}
-								console.log('test', await window.vitePassport.getConnectedAddress());
-								setState({
-									vpAddress: await window.vitePassport.getConnectedAddress(),
-								});
 							} else {
 								setState({ toast: i18n.vitePassportNotDetected });
 							}

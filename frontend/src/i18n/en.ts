@@ -31,6 +31,7 @@ const en = {
 	viteExpressNetworkDoesNotMatchDappNetworkUrl:
 		'Vite Express network does not match dapp network URL',
 	successfullyCopied: 'Successfully copied',
+	unsupportedNetwork: 'Unsupported network',
 	test: 'test',
 	'': '',
 };
