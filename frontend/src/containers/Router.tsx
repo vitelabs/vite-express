@@ -8,7 +8,7 @@ import { connect } from '../utils/globalContext';
 import { State, ViteBalanceInfo } from '../utils/types';
 import Toast from './Toast';
 import { VCSessionKey } from '../utils/viteConnect';
-import { networkList, PROD } from '../utils/constants';
+import { networkList } from '../utils/constants';
 import PageContainer from './PageContainer';
 import CafeContract from '../contracts/Cafe';
 import History from '../pages/History';
@@ -112,15 +112,18 @@ const Router = ({ i18n, setState, vpAddress, vcInstance, activeNetworkIndex }: P
 			if (!activeAddress) {
 				return;
 			}
+			const network = networkList[activeNetworkIndex];
+			if (!network) {
+				throw new Error(i18n.unsupportedNetwork);
+			}
+			if (vpAddress && network.rpcUrl !== (await window.vitePassport!.getNetwork()).rpcUrl) {
+				throw new Error(i18n.vitePassportNetworkDoesNotMatchDappNetworkUrl);
+			}
 			const methodAbi = contract.abi.find(
 				(x: any) => x.name === methodName && x.type === 'function'
 			);
 			if (!methodAbi) {
 				throw new Error(`method not found: ${methodName}`);
-			}
-			const network = networkList[activeNetworkIndex];
-			if (!network) {
-				throw new Error(i18n.unsupportedNetwork);
 			}
 			// @ts-ignore
 			const toAddress = contract.address[network.name.toLowerCase()];

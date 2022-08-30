@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { connect } from '../utils/globalContext';
 import { State } from '../utils/types';
 

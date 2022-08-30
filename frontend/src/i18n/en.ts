@@ -28,8 +28,8 @@ const en = {
 	or: 'or',
 	connectWithVitePassport: 'Connect with Vite Passport',
 	vitePassportNotDetected: 'Vite Passport not detected',
-	viteExpressNetworkDoesNotMatchDappNetworkUrl:
-		'Vite Express network does not match dapp network URL',
+	vitePassportNetworkDoesNotMatchDappNetworkUrl:
+		'Vite Passport network does not match dapp network URL',
 	successfullyCopied: 'Successfully copied',
 	unsupportedNetwork: 'Unsupported network',
 	test: 'test',

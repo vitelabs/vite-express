@@ -8,7 +8,7 @@ import { shortenAddress } from '../utils/strings';
 import { CoffeeBuyEvent, State } from '../utils/types';
 import { getPastEvents } from '../utils/viteScripts';
 
-type Props = State & {};
+type Props = State;
 
 const History = ({ i18n, viteApi, activeNetworkIndex, setState }: Props) => {
 	useTitle(i18n.history);

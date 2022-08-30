@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { TranslateIcon, SunIcon, MoonIcon, DesktopComputerIcon } from '@heroicons/react/outline';
 import A from '../components/A';
 import { State } from '../utils/types';
@@ -6,7 +6,7 @@ import { prefersDarkTheme } from '../utils/misc';
 import { connect } from '../utils/globalContext';
 import ConnectWalletButton from './ConnectWalletButton';
 import ViteLogo from '../assets/ViteLogo';
-import { networkList, PROD } from '../utils/constants';
+import { networkList } from '../utils/constants';
 import DropdownButton from '../components/DropdownButton';
 
 type Props = State & {
@@ -32,21 +32,6 @@ const PageContainer = ({
 		});
 	}, [setState, languageType]);
 
-	useEffect(() => {
-		(async () => {
-			if (i18n && window?.vitePassport) {
-				if (!(await window.vitePassport.getConnectedAddress())) return;
-				const activeNetwork = await window.vitePassport.getNetwork();
-				let i = networkList.findIndex((n) => n.rpcUrl === activeNetwork.rpcUrl);
-				if (i === -1) {
-					setState({ toast: i18n.viteExpressNetworkDoesNotMatchDappNetworkUrl });
-					i = 0;
-				}
-				setState({ activeNetworkIndex: i });
-			}
-		})();
-	}, [i18n]); // eslint-disable-line
-
 	const languages = [
 		['English', 'en'],
 		// ['English', 'en'],
@@ -62,12 +47,14 @@ const PageContainer = ({
 		let unsubscribe = () => {};
 		if (vpAddress && vpAddress === activeAddress && window?.vitePassport?.on) {
 			unsubscribe = window.vitePassport.on('networkChange', (payload) => {
-				let i = networkList.findIndex((n) => n.rpcUrl === payload.activeNetwork.rpcUrl);
-				if (i === -1) {
-					setState({ toast: i18n.viteExpressNetworkDoesNotMatchDappNetworkUrl });
-					i = 0;
+				let activeNetworkIndex = networkList.findIndex(
+					(n) => n.rpcUrl === payload.activeNetwork.rpcUrl
+				);
+				if (activeNetworkIndex === -1) {
+					setState({ toast: i18n.vitePassportNetworkDoesNotMatchDappNetworkUrl });
+					activeNetworkIndex = 0;
 				}
-				setState({ activeNetworkIndex: i });
+				setState({ activeNetworkIndex });
 			});
 		}
 		return unsubscribe;

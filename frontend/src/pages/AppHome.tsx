@@ -11,7 +11,7 @@ import { validateInputs } from '../utils/misc';
 import { toQueryString, toSmallestUnit } from '../utils/strings';
 import { State } from '../utils/types';
 
-type Props = State & {};
+type Props = State;
 
 const AppHome = ({
 	copyWithToast,
