@@ -12,12 +12,13 @@
 		"@heroicons/react": "1.0.6",
 		"@testing-library/jest-dom": "5.16.4",
 		"@vite/connector": "0.0.2",
-		"@vite/vitejs-ws": "2.3.19-alpha.8",
 		"@vite/vitejs": "2.3.19-alpha.8",
+		"@vite/vitejs-ws": "2.3.19-alpha.8",
+		"bignumber.js": "^9.1.0",
 		"qrcode": "1.5.0",
+		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
-		"react-router-dom": "6.3.0",
-		"react": "^18.2.0"
+		"react-router-dom": "6.3.0"
 	},
 	"devDependencies": {
 		"@types/jest": "27.4.1",
