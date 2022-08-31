@@ -31,7 +31,7 @@ const Modal = ({ onClose = () => {}, children, className }: Props) => {
 				document.body.style.overflow = 'visible';
 			}
 		};
-	}, [modalParent?.children.length]);
+	}, []);
 
 	return ReactDOM.createPortal(
 		<div
