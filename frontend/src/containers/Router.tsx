@@ -138,7 +138,7 @@ const Router = ({ i18n, setState, vpAddress, vcInstance, activeNetworkIndex }: P
 				tokenId,
 				amount,
 			};
-			if (vpAddress === activeAddress && window?.vitePassport?.writeAccountBlock) {
+			if (vpAddress === activeAddress && window?.vitePassport) {
 				return window.vitePassport.writeAccountBlock('callContract', blockParams);
 			} else if (vcInstance) {
 				return vcInstance.signAndSendTx([

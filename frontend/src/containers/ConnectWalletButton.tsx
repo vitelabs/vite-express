@@ -23,16 +23,6 @@ const ConnectWalletButton = ({ setState, i18n, activeAddress, vcInstance, vpAddr
 	}, [setState, vcInstance]);
 
 	useEffect(() => {
-		let unsubscribe = () => {};
-		if (window?.vitePassport?.on) {
-			unsubscribe = window.vitePassport.on('accountChange', (payload) => {
-				setState({ vpAddress: payload.activeAddress });
-			});
-		}
-		return unsubscribe;
-	}, [setState]);
-
-	useEffect(() => {
 		if (activeAddress) {
 			connectURISet('');
 		}
@@ -45,7 +35,7 @@ const ConnectWalletButton = ({ setState, i18n, activeAddress, vcInstance, vpAddr
 				<button
 					className="fx px-2 py-0.5 h-7 gap-2"
 					onClick={() => {
-						if (vpAddress && window?.vitePassport?.disconnectWallet) {
+						if (vpAddress && window?.vitePassport) {
 							setState({ vpAddress: undefined });
 							window.vitePassport.disconnectWallet();
 						} else {
@@ -86,7 +76,6 @@ const ConnectWalletButton = ({ setState, i18n, activeAddress, vcInstance, vpAddr
 									await window.vitePassport.connectWallet();
 									const activeNetwork = await window.vitePassport.getNetwork();
 									setState({
-										vpAddress: await window.vitePassport.getConnectedAddress(),
 										activeNetworkIndex: networkList.findIndex(
 											(n) => n.rpcUrl === activeNetwork.rpcUrl
 										),

@@ -18,7 +18,7 @@ const App = () => {
 			let vpAddress: undefined | string;
 			let activeNetworkIndex: undefined | number;
 
-			if (window?.vitePassport?.getConnectedAddress) {
+			if (window?.vitePassport) {
 				vpAddress = await window.vitePassport.getConnectedAddress();
 				if (vpAddress) {
 					const activeNetwork = await window.vitePassport.getNetwork();
@@ -26,7 +26,7 @@ const App = () => {
 				}
 			}
 			if (activeNetworkIndex === undefined || activeNetworkIndex === -1) {
-				activeNetworkIndex = 0;
+				activeNetworkIndex = localStorage.activeNetworkIndex || 0;
 			}
 
 			// console.log('vpAddress:', vpAddress);

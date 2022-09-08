@@ -45,7 +45,7 @@ const PageContainer = ({
 
 	useEffect(() => {
 		let unsubscribe = () => {};
-		if (vpAddress && vpAddress === activeAddress && window?.vitePassport?.on) {
+		if (window?.vitePassport && vpAddress && vpAddress === activeAddress) {
 			unsubscribe = window.vitePassport.on('networkChange', (payload) => {
 				let activeNetworkIndex = networkList.findIndex(
 					(n) => n.rpcUrl === payload.activeNetwork.rpcUrl
@@ -59,6 +59,16 @@ const PageContainer = ({
 		}
 		return unsubscribe;
 	}, [setState, vpAddress, activeAddress, i18n]);
+
+	useEffect(() => {
+		let unsubscribe = () => {};
+		if (window?.vitePassport) {
+			unsubscribe = window.vitePassport.on('accountChange', (payload) => {
+				setState({ vpAddress: payload.activeAddress });
+			});
+		}
+		return unsubscribe;
+	}, [setState]);
 
 	return !i18n ? null : (
 		<div className="h-0 min-h-screen relative flex flex-col">
