@@ -1,6 +1,6 @@
 const Cafe = {
 	address: {
-		mainnet: '',
+		mainnet: 'vite_40a7f24b11036aaa293a0a9751f66c1d88e7a6a13e9d0cb629',
 		testnet: 'vite_40a7f24b11036aaa293a0a9751f66c1d88e7a6a13e9d0cb629', // <your_contract_address>
 		localnet: '',
 	},

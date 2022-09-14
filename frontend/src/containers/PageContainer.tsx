@@ -1,12 +1,12 @@
-import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { TranslateIcon, SunIcon, MoonIcon, DesktopComputerIcon } from '@heroicons/react/outline';
 import A from '../components/A';
-import { NetworkTypes, State } from '../utils/types';
+import { State } from '../utils/types';
 import { prefersDarkTheme } from '../utils/misc';
 import { connect } from '../utils/globalContext';
-import ViteConnectButton from './ViteConnectButton';
+import ConnectWalletButton from './ConnectWalletButton';
 import ViteLogo from '../assets/ViteLogo';
-import { PROD } from '../utils/constants';
+import { networkList } from '../utils/constants';
 import DropdownButton from '../components/DropdownButton';
 
 type Props = State & {
@@ -16,11 +16,13 @@ type Props = State & {
 
 const PageContainer = ({
 	noPadding,
-	networkType,
+	activeNetworkIndex,
 	languageType,
 	i18n,
 	setState,
 	children,
+	vpAddress,
+	activeAddress,
 }: Props) => {
 	const [theme, themeSet] = useState(localStorage.theme);
 
@@ -29,15 +31,6 @@ const PageContainer = ({
 			setState({ i18n: translation.default });
 		});
 	}, [setState, languageType]);
-
-	const networkTypes = useMemo(() => {
-		const arr: [NetworkTypes, string][] = [
-			['mainnet', i18n?.mainnet],
-			['testnet', i18n?.testnet],
-		];
-		!PROD && arr.push(['localnet', i18n?.localnet]);
-		return arr;
-	}, [i18n]);
 
 	const languages = [
 		['English', 'en'],
@@ -49,6 +42,33 @@ const PageContainer = ({
 		[MoonIcon, i18n?.dark],
 		[DesktopComputerIcon, i18n?.system],
 	];
+
+	useEffect(() => {
+		let unsubscribe = () => {};
+		if (window?.vitePassport && vpAddress && vpAddress === activeAddress) {
+			unsubscribe = window.vitePassport.on('networkChange', (payload) => {
+				let activeNetworkIndex = networkList.findIndex(
+					(n) => n.rpcUrl === payload.activeNetwork.rpcUrl
+				);
+				if (activeNetworkIndex === -1) {
+					setState({ toast: i18n.vitePassportNetworkDoesNotMatchDappNetworkUrl });
+					activeNetworkIndex = 0;
+				}
+				setState({ activeNetworkIndex });
+			});
+		}
+		return unsubscribe;
+	}, [setState, vpAddress, activeAddress, i18n]);
+
+	useEffect(() => {
+		let unsubscribe = () => {};
+		if (window?.vitePassport) {
+			unsubscribe = window.vitePassport.on('accountChange', (payload) => {
+				setState({ vpAddress: payload.activeAddress });
+			});
+		}
+		return unsubscribe;
+	}, [setState]);
 
 	return !i18n ? null : (
 		<div className="h-0 min-h-screen relative flex flex-col">
@@ -66,31 +86,32 @@ const PageContainer = ({
 				</div>
 				<div className="fx gap-3 relative">
 					<DropdownButton
-						buttonJsx={<p className="text-skin-secondary">{i18n[networkType]}</p>}
+						buttonJsx={
+							<p className="text-skin-secondary">{networkList[activeNetworkIndex].name}</p>
+						}
 						dropdownJsx={
 							<>
-								{networkTypes.map(([networkType, label]) => {
-									const active = (localStorage.networkType || 'testnet') === networkType;
+								{networkList.map((network, i) => {
 									return (
 										<button
-											key={networkType}
+											key={network.rpcUrl}
 											className={`fx font-semibold px-2 w-full h-7 bg-skin-foreground brightness-button ${
-												active ? 'text-skin-highlight' : ''
+												activeNetworkIndex === i ? 'text-skin-highlight' : ''
 											}`}
 											onMouseDown={(e) => e.preventDefault()}
 											onClick={() => {
-												localStorage.networkType = networkType;
-												setState({ networkType });
+												localStorage.activeNetworkIndex = i;
+												setState({ activeNetworkIndex: i });
 											}}
 										>
-											{label}
+											{network.name}
 										</button>
 									);
 								})}
 							</>
 						}
 					/>
-					<ViteConnectButton />
+					<ConnectWalletButton />
 					<DropdownButton
 						buttonJsx={
 							<div className="w-8 h-8 xy">

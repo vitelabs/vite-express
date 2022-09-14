@@ -8,33 +8,31 @@ import { connect } from '../utils/globalContext';
 import { State, ViteBalanceInfo } from '../utils/types';
 import Toast from './Toast';
 import { VCSessionKey } from '../utils/viteConnect';
-import { PROD } from '../utils/constants';
+import { networkList } from '../utils/constants';
 import PageContainer from './PageContainer';
 import CafeContract from '../contracts/Cafe';
 import History from '../pages/History';
+import { copyToClipboardAsync } from '../utils/strings';
 
-const providerWsURLs = {
-	...(PROD ? {} : { localnet: 'ws://localhost:23457' }),
-	testnet: 'wss://buidl.vite.net/gvite/ws',
-	mainnet: 'wss://node.vite.net/gvite/ws', // or 'wss://node-tokyo.vite.net/ws'
-};
 const providerTimeout = 60000;
 const providerOptions = { retryTimes: 10, retryInterval: 5000 };
 
 type Props = State;
 
-const Router = ({ setState, vcInstance, networkType }: Props) => {
-	const connectedAccount = useMemo(() => vcInstance?.accounts[0], [vcInstance]);
+const Router = ({ i18n, setState, vpAddress, vcInstance, activeNetworkIndex }: Props) => {
+	const activeAddress = useMemo(() => {
+		return vpAddress || vcInstance?.accounts[0];
+	}, [vpAddress, vcInstance]);
+	useEffect(() => {
+		setState({ activeAddress });
+	}, [setState, activeAddress]);
 
-	const rpc = useMemo(
-		() =>
-			new WS_RPC(
-				networkType === 'mainnet' ? providerWsURLs.mainnet : providerWsURLs.testnet,
-				providerTimeout,
-				providerOptions
-			),
-		[networkType]
-	);
+	const rpc = useMemo(() => {
+		const rpcUrl = networkList[activeNetworkIndex]?.rpcUrl;
+		if (rpcUrl) {
+			return new WS_RPC(rpcUrl, providerTimeout, providerOptions);
+		}
+	}, [activeNetworkIndex]);
 
 	const viteApi = useMemo(() => {
 		return new ViteAPI(rpc, () => {
@@ -67,7 +65,7 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 				})
 				.catch((e) => {
 					console.log(e);
-					setState({ toast: e, vcInstance: null });
+					setState({ toast: e, vcInstance: undefined });
 					localStorage.removeItem(VCSessionKey);
 					// Sometimes on page load, this will catch with
 					// Error: CONNECTION ERROR: Couldn't connect to node wss://buidl.vite.net/gvite/ws.
@@ -76,6 +74,19 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 	}, [setState, getBalanceInfo, vcInstance]);
 
 	useEffect(updateViteBalanceInfo, [updateViteBalanceInfo]);
+
+	// useEffect(() => {
+	// 	if (window.vitePassport) {
+	// 		window.vitePassport
+	// 			.getConnectedAddress()
+	// 			.then((data) => {
+	// 				console.log('data', data);
+	// 			})
+	// 			.catch((err) => {
+	// 				console.log('err', err);
+	// 			});
+	// 	}
+	// }, []);
 
 	useEffect(() => {
 		if (vcInstance) {
@@ -91,15 +102,22 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 	}, [setState, subscribe, vcInstance, viteApi, updateViteBalanceInfo]);
 
 	const callContract = useCallback(
-		(
+		async (
 			contract: typeof CafeContract,
 			methodName: string,
 			params: any[] = [],
 			tokenId?: string,
 			amount?: string
 		) => {
-			if (!vcInstance) {
+			if (!activeAddress) {
 				return;
+			}
+			const network = networkList[activeNetworkIndex];
+			if (!network) {
+				throw new Error(i18n.unsupportedNetwork);
+			}
+			if (vpAddress && network.rpcUrl !== (await window.vitePassport!.getNetwork()).rpcUrl) {
+				throw new Error(i18n.vitePassportNetworkDoesNotMatchDappNetworkUrl);
 			}
 			const methodAbi = contract.abi.find(
 				(x: any) => x.name === methodName && x.type === 'function'
@@ -107,27 +125,45 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 			if (!methodAbi) {
 				throw new Error(`method not found: ${methodName}`);
 			}
-			const toAddress = contract.address[networkType];
+			// @ts-ignore
+			const toAddress = contract.address[network.name.toLowerCase()];
 			if (!toAddress) {
-				const toast = `${networkType} contract address not found`;
-				setState({ toast });
-				throw new Error(toast);
+				throw new Error(i18n.unsupportedNetwork);
 			}
-			const block = accountBlock.createAccountBlock('callContract', {
-				address: connectedAccount,
+			const blockParams = {
+				address: activeAddress,
 				abi: methodAbi,
 				toAddress,
 				params,
 				tokenId,
 				amount,
-			}).accountBlock;
-			return vcInstance.signAndSendTx([{ block }]);
+			};
+			if (vpAddress === activeAddress && window?.vitePassport) {
+				return window.vitePassport.writeAccountBlock('callContract', blockParams);
+			} else if (vcInstance) {
+				return vcInstance.signAndSendTx([
+					{ block: accountBlock.createAccountBlock('callContract', blockParams).accountBlock },
+				]);
+			}
 		},
-		[connectedAccount, networkType, vcInstance, setState]
+		[activeAddress, activeNetworkIndex, vcInstance, vpAddress, i18n]
 	);
+
 	useEffect(() => {
 		setState({ callContract });
 	}, [setState, callContract]);
+
+	useEffect(() => {
+		setState({
+			copyWithToast: (text = '') => {
+				if (copyToClipboardAsync(text)) {
+					setState({ toast: i18n.successfullyCopied });
+				} else {
+					setState({ toast: 'clipboard API not supported' });
+				}
+			},
+		});
+	}, [setState, i18n]);
 
 	return (
 		<BrowserRouter>
