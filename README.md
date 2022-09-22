@@ -1,6 +1,8 @@
 # The Official Vite Dapp Template
 
-# Getting Started
+*The below docs were written while using Node v14.18.1*
+
+## Getting Started with the Contracts
 ```
 npm install
 
@@ -12,7 +14,6 @@ npx vuilder test
 npx ts-node scripts/deploy.ts
 
 # stake quota for contract(by web-wallet)
-
 ```
 
 ## Getting Started with the Frontend
