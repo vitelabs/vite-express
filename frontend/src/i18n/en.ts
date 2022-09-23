@@ -16,7 +16,6 @@ const en = {
 	history: 'History',
 	app: 'App',
 	amount: 'Amount',
-	positiveIntegersOnly: 'Positive integers only',
 	testnet: 'Testnet',
 	mainnet: 'Mainnet',
 	localnet: 'Localnet',

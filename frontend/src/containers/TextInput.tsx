@@ -65,7 +65,7 @@ const TextInput = ({
 	password,
 	initialValue,
 	resizable,
-	maxDecimals,
+	maxDecimals = 0,
 	disabled,
 	label,
 	placeholder = '',

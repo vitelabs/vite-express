@@ -45,14 +45,10 @@ const AppHome = ({
 				numeric
 				_ref={amountRef}
 				label={i18n.amount}
-				maxDecimals={18}
 				initialValue={searchParams.get('amount')}
 				getIssue={(v) => {
 					if (+v <= 0) {
 						return i18n.amountMustBePositive;
-					}
-					if (+v % 1 !== 0) {
-						return i18n.positiveIntegersOnly;
 					}
 				}}
 			/>
