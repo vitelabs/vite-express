@@ -128,13 +128,7 @@ const TextInput = ({
 						? 'border-skin-highlight shadow-md'
 						: 'shadow ' + (error ? 'border-red-400' : 'border-skin-alt')
 				} ${resizable ? 'resize-y' : 'resize-none'} ${inputClassName}`}
-				{...(numeric
-					? {
-							type: 'number',
-							pattern: 'd*',
-							inputMode: 'decimal',
-					  }
-					: { type: password && !visible ? 'password' : 'text' })}
+				type={password && !visible ? 'password' : 'text'}
 				onFocus={() => {
 					focusedSet(true);
 					errorSet('');
@@ -148,7 +142,6 @@ const TextInput = ({
 					internalValueSet(value);
 				}}
 				onChange={({ target: { value } }) => {
-					console.log('123e:', value);
 					// e.stopPropagation();
 					// e.preventDefault();
 					if (disabled) {
@@ -159,7 +152,6 @@ const TextInput = ({
 						// eslint-disable-next-line
 						value = value.replace(/[^0123456789\.]/g, '');
 						value = normalizeNumericInput(value, maxDecimals);
-						console.log('value:', value);
 					}
 					value = maxLength ? value.slice(0, maxLength) : value;
 					if (onUserInput) {
