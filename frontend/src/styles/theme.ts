@@ -4,7 +4,7 @@ if (!localStorage.theme) {
 	localStorage.theme = 'system';
 }
 
-if (localStorage.theme === 'dark' || (localStorage.theme === 'system' && prefersDarkTheme)) {
+if (localStorage.theme === 'dark' || (localStorage.theme === 'system' && prefersDarkTheme())) {
 	document.documentElement.classList.add('dark');
 } else {
 	document.documentElement.classList.remove('dark');
