@@ -57,8 +57,8 @@ const Router = ({ i18n, setState, vpAddress, vcInstance, activeNetworkIndex }: P
 	);
 
 	const updateViteBalanceInfo = useCallback(() => {
-		if (vcInstance?.accounts[0]) {
-			getBalanceInfo(vcInstance.accounts[0])
+		if (activeAddress) {
+			getBalanceInfo(activeAddress)
 				// @ts-ignore
 				.then((res: ViteBalanceInfo) => {
 					setState({ viteBalanceInfo: res });
@@ -71,7 +71,7 @@ const Router = ({ i18n, setState, vpAddress, vcInstance, activeNetworkIndex }: P
 					// Error: CONNECTION ERROR: Couldn't connect to node wss://buidl.vite.net/gvite/ws.
 				});
 		}
-	}, [setState, getBalanceInfo, vcInstance]);
+	}, [setState, getBalanceInfo, activeAddress]);
 
 	useEffect(updateViteBalanceInfo, [updateViteBalanceInfo]);
 
@@ -89,8 +89,8 @@ const Router = ({ i18n, setState, vpAddress, vcInstance, activeNetworkIndex }: P
 	// }, []);
 
 	useEffect(() => {
-		if (vcInstance) {
-			subscribe('newAccountBlocksByAddr', vcInstance.accounts[0])
+		if (activeAddress) {
+			subscribe('newAccountBlocksByAddr', activeAddress)
 				.then((event: any) => {
 					event.on(() => {
 						updateViteBalanceInfo();
@@ -99,7 +99,7 @@ const Router = ({ i18n, setState, vpAddress, vcInstance, activeNetworkIndex }: P
 				.catch((err: any) => console.warn(err));
 		}
 		return () => viteApi.unsubscribeAll();
-	}, [setState, subscribe, vcInstance, viteApi, updateViteBalanceInfo]);
+	}, [setState, subscribe, activeAddress, viteApi, updateViteBalanceInfo]);
 
 	const callContract = useCallback(
 		async (
